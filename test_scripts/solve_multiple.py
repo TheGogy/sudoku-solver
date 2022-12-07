@@ -1,5 +1,5 @@
 import numpy as np
-from time import process_time, perf_counter_ns
+from time import process_time, perf_counter
 from sudoku import sudoku_solver
 
 def solve_multiple(sudoku_array: np.ndarray,
@@ -17,6 +17,7 @@ def solve_multiple(sudoku_array: np.ndarray,
     fastest = 10000
     slowest = 0
     solutions = np.ndarray
+    script_start_time = perf_counter()
     try:
         for sudoku in sudoku_array:
             print(f"SOLVING SUDOKU    {count}/{total_count}", end="\r")
@@ -25,17 +26,15 @@ def solve_multiple(sudoku_array: np.ndarray,
             # - - - - - - - - - - - - - - - - - - - #
             # This code is written like this because if it was cleaner it has an impact on performance
             if use_perf_counter:
-                start_time = perf_counter_ns()
+                start_time = perf_counter()
                 solution = sudoku_solver(sudoku)
-                end_time = perf_counter_ns()
-                time_taken = (end_time-start_time) / 1000000000
+                end_time = perf_counter()
             else:
                 start_time = process_time()
                 solution = sudoku_solver(sudoku)
                 end_time = process_time()
-                time_taken = end_time - start_time
-
             # - - - - - - - - - - - - - - - - - - - #
+            time_taken = end_time - start_time
             total_time += time_taken
             if time_taken < fastest:
                 fastest = time_taken
@@ -47,17 +46,22 @@ def solve_multiple(sudoku_array: np.ndarray,
 
     except KeyboardInterrupt:
         pass
+    script_end_time = perf_counter()
     print( f'''
-    # - - - - - - - - - - - - - - - - - - - - - - - #
+# - - - - - - - - - - - - - - - - - - - - - - - #
 
-        TOTAL TIME                {total_time}
-        SUDOKUS SOLVED            {count}
+    Solved {count} sudokus in {round(script_end_time - script_start_time, 3)} seconds.
 
-        FASTEST TIME              {fastest}
-        SLOWEST TIME              {slowest}
-        AVERAGE TIME              {total_time / count}
+    TOTAL TIME                {total_time}
+    SUDOKUS SOLVED            {count}
 
-    # - - - - - - - - - - - - - - - - - - - - - - - #
+    FASTEST TIME              {fastest}
+    SLOWEST TIME              {slowest}
+    AVERAGE TIME              {total_time / count}
+
+    Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
+
+# - - - - - - - - - - - - - - - - - - - - - - - #
             ''')
     if save_to_file:
         save_file_name = f"{save_to_file}_solutions.npy"

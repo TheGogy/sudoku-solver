@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 def load_array(filename: str) -> np.ndarray:
     try:

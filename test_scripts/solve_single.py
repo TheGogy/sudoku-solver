@@ -31,8 +31,17 @@ def solve_single(sudoku: np.ndarray,
 
     print(" - - - - - - - - [ Solved sudoku ] - - - - - - - - ")
     print(solution)
-    print(" - - - - - - - - - [ Time taken ] - - - - - - - - - ")
-    print("TIME TAKEN     ", time_taken)
+
+    print(f"""
+# - - - - - - - - - - - - - - - - - - - - - - - #
+
+    TOTAL TIME                {time_taken}
+
+    Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
+
+# - - - - - - - - - - - - - - - - - - - - - - - #
+
+          """)
 
     if save_to_file:
         save_file_name = f"{save_to_file}_solutions.npy"

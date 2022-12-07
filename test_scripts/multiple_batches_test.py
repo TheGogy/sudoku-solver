@@ -1,5 +1,5 @@
 import numpy as np
-from time import process_time, perf_counter_ns
+from time import process_time, perf_counter
 from sudoku import sudoku_solver
 
 def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
@@ -10,7 +10,7 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
 
     @args num (int) : The number of batches to test
     '''
-    start_testing_time = process_time()
+    script_start_time = process_time()
     total_time = 0
     count = 0
     fastest_batch_time = 10000
@@ -21,7 +21,7 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
         for i in range(num):
             print(f"RUNNING BATCH    {i}/{num}", end="\r")
 
-            difficulties = ['very_easy', 'easy', 'medium', 'hard']
+            difficulties = ['very_easy', 'very_easy', 'very_easy', 'very_easy']
             batch_time = 0
             fastest_time_from_batch = 10000
             slowest_time_from_batch = 0
@@ -30,23 +30,22 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
                 for i in range(len(sudokus)):
                     sudoku = sudokus[i].copy()
                     # - - - - - - - - - - - - - - - - - - - #
-                    # This code is written like this because if it was cleaner it has an impact on performance
+                    # This code is written like this because if
+                    # it was cleaner it seems to have an impact on performance
                     if use_perf_counter:
-                        start_time = perf_counter_ns()
+                        start_time = perf_counter()
                         solution = sudoku_solver(sudoku)
-                        end_time = perf_counter_ns()
-                        time_taken = (end_time-start_time) / 1000000000
+                        end_time = perf_counter()
                     else:
                         start_time = process_time()
                         solution = sudoku_solver(sudoku)
                         end_time = process_time()
-                        time_taken = end_time - start_time
-
                     # - - - - - - - - - - - - - - - - - - - #
 
                     # The code below is a little ugly.
                     # It keeps track of the fastest and slowest
                     # individual solves and batch solves.
+                    time_taken = end_time - start_time
                     batch_time += time_taken
 
                     if time_taken < fastest_time_from_batch:
@@ -76,12 +75,12 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
 
     average_batch_time = total_time / (count/60)
     average_single_time = total_time / (count)
-    end_testing_time = process_time()
+    script_end_time = process_time()
 
     print(f'''
 # - - - - - - - - - - - - - - - - - - - - - - - - - #
 
-    RAN {count} tests in {round(end_testing_time - start_testing_time, 3)} seconds.
+    Solved {count} sudokus in {round(script_end_time - script_start_time, 3)} seconds.
 
     TOTAL SOLVING TIME      {total_time}
 
@@ -93,7 +92,7 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
     SLOWEST SINGLE TIME     {slowest_time}
     AVERAGE SINGLE TIME     {average_single_time}
 
-    All times are calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
+    Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - #
           ''')

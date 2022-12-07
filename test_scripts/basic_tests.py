@@ -1,6 +1,7 @@
 import numpy as np
-from time import process_time, perf_counter_ns
+from time import process_time, perf_counter
 from sudoku import sudoku_solver
+
 
 def basic_tests(use_perf_counter: bool) -> None:
     '''
@@ -15,6 +16,7 @@ def basic_tests(use_perf_counter: bool) -> None:
     total_time = 0
     total_correct = 0
 
+    script_start_time = perf_counter()
     for difficulty in difficulties:
         print(f"Testing {difficulty} sudokus")
 
@@ -32,21 +34,20 @@ def basic_tests(use_perf_counter: bool) -> None:
             # - - - - - - - - - - - - - - - - - - - #
             # This code is written like this because if it was cleaner it has an impact on performance
             if use_perf_counter:
-                start_time = perf_counter_ns()
+                start_time = perf_counter()
                 your_solution = sudoku_solver(sudoku)
-                end_time = perf_counter_ns()
-                time_taken = (end_time-start_time) / 1000000000
+                end_time = perf_counter()
             else:
                 start_time = process_time()
                 your_solution = sudoku_solver(sudoku)
                 end_time = process_time()
-                time_taken = end_time - start_time
             # - - - - - - - - - - - - - - - - - - - #
 
             # profiler.disable()
             # stats = pstats.Stats(profiler)
             # stats.print_stats()
 
+            time_taken = end_time - start_time
             total_time += time_taken
 
             print(f"This is your solution for {difficulty} sudoku number", i)
@@ -66,12 +67,19 @@ def basic_tests(use_perf_counter: bool) -> None:
         print(f"{count}/{len(sudokus)} {difficulty} sudokus correct")
         if count < len(sudokus):
             break
+    script_end_time = perf_counter()
+
     print(f'''
 # - - - - - - - - - - - - - - - - - - - - - - - - - #
 
-    TOTAL TIME        {total_time}
-    AVERAGE TIME      {total_time / (len(difficulties) * 15)}
-    TOTAL CORRECT     {total_correct}/{len(difficulties) * 15}
+    Solved {total_correct} sudokus in {round(script_end_time - script_start_time, 3)} seconds.
+
+
+    TOTAL SOLVING TIME       {total_time}
+    AVERAGE TIME             {total_time / (len(difficulties) * 15)}
+    TOTAL CORRECT            {total_correct}/{len(difficulties) * 15}
+
+    Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - #
           ''')
