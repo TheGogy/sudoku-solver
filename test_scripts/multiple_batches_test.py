@@ -21,7 +21,7 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
         for i in range(num):
             print(f"RUNNING BATCH    {i}/{num}", end="\r")
 
-            difficulties = ['very_easy', 'very_easy', 'very_easy', 'very_easy']
+            difficulties = ['very_easy', 'easy', 'medium', 'hard']
             batch_time = 0
             fastest_time_from_batch = 10000
             slowest_time_from_batch = 0

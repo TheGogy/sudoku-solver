@@ -1,5 +1,6 @@
 from itertools import product
-from numpy import ndarray, add, ndenumerate, full, array
+import numpy as np
+from numpy import ndarray, add, ndenumerate, full, array, size
 
 #                      _        __   __
 #                /\   | |       \ \ / /
@@ -71,28 +72,29 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
             deselect(matrix_A, constraints, row, cols)
             solution.pop()
 
-#   ______                _
-#  |  ____|              | |
-#  | |__  __  ____ _  ___| |_    ___ _____   _____ _ __
-#  |  __| \ \/ / _` |/ __| __|  / __/ _ \ \ / / _ \ '__|
-#  | |____ >  < (_| | (__| |_  | (_| (_) \ V /  __/ |
-#  |______/_/\_\__,_|\___|\__|  \___\___/ \_/ \___|_|
+
+#   __  __       _
+#  |  \/  |     (_)
+#  | \  / | __ _ _ _ __
+#  | |\/| |/ _` | | '_ \
+#  | |  | | (_| | | | | |
+#  |_|  |_|\__,_|_|_| |_|
 
 
-def exact_cover_solver(sudoku) -> ndarray or None:
+def sudoku_solver(sudoku) -> ndarray or None:
     '''
     Solves the given sudoku using Donald Knuth's Dancing Links method.
 
     @args sudoku (ndarray) : the sudoku to solve
-    @returns: None if sudoku has no solutions
+    @returns: solution
     @returns (generator obj) : Solved sudoku if sudoku has solution
     '''
 
     matrix_A = (
         [("cell", i) for i in product (range(9), range(9)    )] +
-        [("row", i)  for i in product (range(9), range(1, 10))] +
-        [("col", i)  for i in product (range(9), range(1, 10))] +
-        [("box", i)  for i in product (range(9), range(1, 10))]
+        [("row",  i) for i in product (range(9), range(1, 10))] +
+        [("col",  i) for i in product (range(9), range(1, 10))] +
+        [("box",  i) for i in product (range(9), range(1, 10))]
         )
     matrix_A = {j: set() for j in matrix_A}
 
@@ -105,14 +107,21 @@ def exact_cover_solver(sudoku) -> ndarray or None:
         #   6 7 8
         constraints[(row, col, cell)] = [
             # Each cell must have a value
-            ("cell",    (row, col)),
+            ("cell", (row, col)),
             # Each row must have each value
-            ("row",     (row, cell)),
+            ("row",  (row, cell)),
             # Each column must have each value
-            ("col",     (col, cell)),
+            ("col",  (col, cell)),
             # Each box must have each value
-            ("box",     (box, cell))
+            ("box",  (box, cell))
         ]
+
+#   ______                _
+#  |  ____|              | |
+#  | |__  __  ____ _  ___| |_    ___ _____   _____ _ __
+#  |  __| \ \/ / _` |/ __| __|  / __/ _ \ \ / / _ \ '__|
+#  | |____ >  < (_| | (__| |_  | (_| (_) \ V /  __/ |
+#  |______/_/\_\__,_|\___|\__|  \___\___/ \_/ \___|_|
 
     # Populate matrix A with possible solutions
     for i, consts in constraints.items():
@@ -126,32 +135,12 @@ def exact_cover_solver(sudoku) -> ndarray or None:
                 select(matrix_A, constraints, (row, col, cell))
             except KeyError:
                 # Sudoku is not solvable
-                return  None
+                return np.full((9, 9), fill_value=-1)
 
-    # find solution and pdate initial state with it
+    # find solution and update initial state with it
     for solution in find_solution(matrix_A, constraints, []):
         for (row, col, val) in solution:
             sudoku[row][col] = val
-        yield sudoku
+        return sudoku
 
-#   __  __       _
-#  |  \/  |     (_)
-#  | \  / | __ _ _ _ __
-#  | |\/| |/ _` | | '_ \
-#  | |  | | (_| | | | | |
-#  |_|  |_|\__,_|_|_| |_|
-
-
-def sudoku_solver(initial_state) -> ndarray:
-    '''
-    Handles input and output of the solver.
-
-    @args initial_state (ndarray) : 9x9 array containing sudoku to solve
-    @returns solved sudoku. If no solutions found, return 9x9 grid of "-1".
-    '''
-    finalSolution = list(exact_cover_solver(initial_state))
-    if not finalSolution:
-        return full((9, 9), fill_value=-1)
-
-    # Solution exists, return it
-    return array(list(finalSolution))[0]
+    return np.full((9, 9), fill_value=-1)

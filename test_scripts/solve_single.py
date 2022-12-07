@@ -3,7 +3,7 @@ from time import process_time, perf_counter_ns
 from sudoku import sudoku_solver
 
 def solve_single(sudoku: np.ndarray,
-                 output_file: str,
+                 save_to_file: str,
                  use_perf_counter: bool) -> np.ndarray or None:
     '''
     Passes a sudoku into the sudoku solver and prints information about it
