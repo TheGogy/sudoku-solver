@@ -1,18 +1,19 @@
-# <a name="intro"></a>Sudoku Solver using Exact Cover
-This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my - relatively modern as of 2022 - laptop, can solve a "hard" sudoku in an average of 2.1 milliseconds and a "very easy" sudoku in an average of 1.1 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
-
+# <a name="intro"></a>**Sudoku Solver using Exact Cover**
 
 ## <a name="links"></a>Links
 - [Intro](#intro)
 - [Usage](#usage)
 - [Test package](/test_scripts/README.md/#title)
 - [Exact Cover](#exact_cover)
-- [My implementation](#my_implementation)
-- [Edge Cases and drawbacks](#edge_cases)
-- [Future Improvement](#future_improvement)
-- [Solving the "hardest sudoku ever"](#hardest_sudoku)
 - [My observations](#observations)
+- [Performance](#performance)
 - [References](#references)
+
+
+# <a name="intro"></a>Intro
+This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my - relatively modern as of 2022 - laptop, can solve a "hard" sudoku in an average of 2.1 milliseconds and a "very easy" sudoku in an average of 1.1 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
+
+[![Solving 6000 sudokus](https://asciinema.org/a/u0SSRbwLDshssddcZmtpzg6Ut.svg)](https://asciinema.org/a/u0SSRbwLDshssddcZmtpzg6Ut)
 
 # <a name="usage"></a>How to use the solver
 
@@ -94,7 +95,7 @@ The exact cover of `X` would be `S* = {B, D, F}` as:
 
 In order to use algorithm X, we must first create a matrix A consisting of 0s and 1s, with a goal of selecting a subset of the rows such that the digit 1 appears in each column exactly once.
 
-Algorithm X takes an element `e` in `A` to cover, and finds a row `r` that covers it. This row is added to the potential solution, and every row that also covers `e` is removed from `A` along with every column that `r` satisfies. It then repeats this process recursively
+Algorithm X takes an element e in `A` to cover, and finds a row r that covers it. This row is added to the potential solution, and every row that also covers e is removed from `A` along with every column that r satisfies. It then repeats this process recursively.
 
 
 The algorithm is presented with the following pseudocode:
@@ -123,17 +124,17 @@ The above problem can be represented with the matrix:
 | E   | 0 | 1 | 1 | 0 | 0 | 1 | 1 |
 | F   | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
 
-Firstly, as matrix `A` is not empty, the algorithm finds the column with the lowest number of `1`s.
-This is column `1`, that has 1s in rows `A` and `B`.
+Firstly, as matrix `A` is not empty, the algorithm finds the column with the lowest number of 1s.
+This is column 1, that has 1s in rows A and A.
 
-The algorithm firstly selects row `A` (but remembers row `B` is a possible solution).
+The algorithm firstly selects row A (but remembers row B is a possible solution).
 
-Row `A` has `1`s in columns `1`, `4` and `7`. (This is the first `for` loop)
+Row A has 1s in columns 1, 1 and 7. (This is the first `for` loop)
 
-Column `1` has `1`s in rows `A`, `B`. Column `4` has rows in `A`, `B`, `C` and column `7` has `1`s in rows `A`, `C`, `E` and `F`.
-Therefore the only row that does *not* have a `1` in any column that row `A` has a `1` in is row `D`. (this is the second `for` loop.)
+Column 1 has 1s in rows A, B. Column 4 has rows in A, B, C and column 7 has 1s in rows A, C, E and F.
+Therefore the only row that does *not* have a 1 in the same column as row A is row D. (this is the second `for` loop.)
 
-This, row `D` is selected and the algorithm repeats.
+This row `D` is selected and the algorithm repeats.
 
 As the matrix is not empty, the algorithm finds the column with the lowest number of `1`s.
 This is column `2`.
@@ -144,7 +145,7 @@ This is column `2`.
 
 As column `2` does not contain any `1`s, this branch of the algorithm terminates unsuccessfully and the algorithm moves onto the next branch.
 
-Repeating the algorithm, we will eventually end up with:
+Continuing the algorithm, we will eventually end up with:
 
 |     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:---:|---|---|---|---|---|---|---|
@@ -155,6 +156,8 @@ Repeating the algorithm, we will eventually end up with:
 meaning that `S* = {B, D, F}` is the exact cover.
 
 If there are no remaining unsearched branches and no solution has been found, there is no exact cover.
+
+For a step by step version of this process, please see the [Wikipedia article](https://wikipedia.org/wiki/Knuth%27s_Algorithm_X?lang=en#Example)
 
 <br />
 
@@ -200,8 +203,22 @@ Why it is this specific solution, I am unsure. I have not found any explanation 
  [3. 2. 4. 6. 7. 1. 9. 8. 5.]
  [5. 1. 8. 4. 9. 3. 2. 7. 6.]]
 ```
+<br />
+
+# <a name="performance"></a>Performance
+
+
+<br />
 
 # <a name="references"></a>References
+Knuth,D. 2000. Dancing Links. https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf
+
+Wikipedia, 2022. Dancing Links. https://wikipedia.org/wiki/Dancing_Links?lang=en
+
+Wikipedia, 2022. Exact cover. https://wikipedia.org/wiki/Exact_cover?lang=en
+
+Wikipedia, 2022. Knuth's Algorithm X. https://wikiless.org/wiki/Knuth%27s_Algorithm_X?lang=en
+
 1 million sudoku dataset: https://www.kaggle.com/datasets/bryanpark/sudoku?resource=download
 
 Ascii art to clearly show sections of code: https://patorjk.com/software/taag/#p=display&f=Big

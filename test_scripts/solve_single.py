@@ -1,5 +1,5 @@
 import numpy as np
-from time import process_time, perf_counter_ns
+from time import process_time, perf_counter
 from sudoku import sudoku_solver
 
 def solve_single(sudoku: np.ndarray,
@@ -21,9 +21,9 @@ def solve_single(sudoku: np.ndarray,
         solution = sudoku_solver(sudoku)
         end_time = process_time() * 1000
     else:
-        start_time = perf_counter_ns() * 1000
+        start_time = perf_counter() * 1000
         solution = sudoku_solver(sudoku)
-        end_time = perf_counter_ns() * 1000
+        end_time = perf_counter() * 1000
     # - - - - - - - - - - - - - - - - - - - #
     time_taken = end_time - start_time
 
