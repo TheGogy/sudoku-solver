@@ -12,8 +12,6 @@
 # <a name="intro"></a>Intro
 This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my - relatively modern as of 2022 - laptop, can solve a "hard" sudoku in an average of 2.1 milliseconds and a "very easy" sudoku in an average of 1.1 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
 
-[![Solving 6000 sudokus](https://asciinema.org/a/u0SSRbwLDshssddcZmtpzg6Ut.svg)](https://asciinema.org/a/u0SSRbwLDshssddcZmtpzg6Ut)
-
 # <a name="usage"></a>How to use the solver
 
 ## <a name="usage_solver"></a>Solver - `sudoku.py`
