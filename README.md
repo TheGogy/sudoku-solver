@@ -6,7 +6,6 @@
 - [Test package](/test_scripts/README.md/#title)
 - [Exact Cover](#exact_cover)
 - [My observations](#observations)
-- [Performance](#performance)
 - [References](#references)
 
 
@@ -203,10 +202,6 @@ Why it is this specific solution, I am unsure. I have not found any explanation 
  [3. 2. 4. 6. 7. 1. 9. 8. 5.]
  [5. 1. 8. 4. 9. 3. 2. 7. 6.]]
 ```
-<br />
-
-# <a name="performance"></a>Performance
-
 
 <br />
 
@@ -218,8 +213,6 @@ Wikipedia, 2022. Dancing Links. https://wikipedia.org/wiki/Dancing_Links?lang=en
 Wikipedia, 2022. Exact cover. https://wikipedia.org/wiki/Exact_cover?lang=en
 
 Wikipedia, 2022. Knuth's Algorithm X. https://wikiless.org/wiki/Knuth%27s_Algorithm_X?lang=en
-
-1 million sudoku dataset: https://www.kaggle.com/datasets/bryanpark/sudoku?resource=download
 
 Ascii art to clearly show sections of code: https://patorjk.com/software/taag/#p=display&f=Big
 
