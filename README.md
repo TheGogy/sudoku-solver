@@ -5,7 +5,7 @@ This is my solution to the problem proposed by CW1 of the AI module. It is an ag
 ## <a name="links"></a>Links
 - [Intro](#intro)
 - [Usage](#usage)
-- [Test package](#test_scripts/usage_test_package)
+- [Test package](/test_scripts/README.md/#title)
 - [Exact Cover](#exact_cover)
 - [My implementation](#my_implementation)
 - [Edge Cases and drawbacks](#edge_cases)
