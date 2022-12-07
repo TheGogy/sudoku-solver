@@ -75,8 +75,8 @@ def basic_tests(use_perf_counter: bool) -> None:
     Solved {total_correct} sudokus in {round(script_end_time - script_start_time, 3)} seconds.
 
 
-    TOTAL SOLVING TIME       {total_time}
-    AVERAGE TIME             {total_time / (len(difficulties) * 15)}
+    TOTAL SOLVING TIME       {total_time} s
+    AVERAGE TIME             {total_time * 1000 / (len(difficulties) * 15)} ms
     TOTAL CORRECT            {total_correct}/{len(difficulties) * 15}
 
     Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()

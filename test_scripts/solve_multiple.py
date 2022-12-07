@@ -26,13 +26,13 @@ def solve_multiple(sudoku_array: np.ndarray,
             # - - - - - - - - - - - - - - - - - - - #
             # This code is written like this because if it was cleaner it has an impact on performance
             if use_perf_counter:
-                start_time = perf_counter()
+                start_time = perf_counter() * 1000
                 solution = sudoku_solver(sudoku)
-                end_time = perf_counter()
+                end_time = perf_counter() * 1000
             else:
-                start_time = process_time()
+                start_time = process_time() * 1000
                 solution = sudoku_solver(sudoku)
-                end_time = process_time()
+                end_time = process_time() * 1000
             # - - - - - - - - - - - - - - - - - - - #
             time_taken = end_time - start_time
             total_time += time_taken
@@ -52,12 +52,12 @@ def solve_multiple(sudoku_array: np.ndarray,
 
     Solved {count} sudokus in {round(script_end_time - script_start_time, 3)} seconds.
 
-    TOTAL TIME                {total_time}
+    TOTAL TIME                {total_time / 1000} s
     SUDOKUS SOLVED            {count}
 
-    FASTEST TIME              {fastest}
-    SLOWEST TIME              {slowest}
-    AVERAGE TIME              {total_time / count}
+    FASTEST TIME              {fastest} ms
+    SLOWEST TIME              {slowest} ms
+    AVERAGE TIME              {total_time / count} ms
 
     Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
 

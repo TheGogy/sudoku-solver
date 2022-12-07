@@ -33,13 +33,13 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
                     # This code is written like this because if
                     # it was cleaner it seems to have an impact on performance
                     if use_perf_counter:
-                        start_time = perf_counter()
+                        start_time = perf_counter() * 1000
                         solution = sudoku_solver(sudoku)
-                        end_time = perf_counter()
+                        end_time = perf_counter() * 1000
                     else:
-                        start_time = process_time()
+                        start_time = process_time() * 1000
                         solution = sudoku_solver(sudoku)
-                        end_time = process_time()
+                        end_time = process_time() * 1000
                     # - - - - - - - - - - - - - - - - - - - #
 
                     # The code below is a little ugly.
@@ -82,15 +82,15 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
 
     Solved {count} sudokus in {round(script_end_time - script_start_time, 3)} seconds.
 
-    TOTAL SOLVING TIME      {total_time}
+    TOTAL SOLVING TIME      {total_time / 1000} s
 
-    FASTEST BATCH TIME      {fastest_batch_time}
-    SLOWEST BATCH TIME      {slowest_batch_time}
-    AVERAGE BATCH TIME      {average_batch_time}
+    FASTEST BATCH TIME      {fastest_batch_time} ms
+    SLOWEST BATCH TIME      {slowest_batch_time} ms
+    AVERAGE BATCH TIME      {average_batch_time} ms
 
-    FASTEST SINGLE TIME     {fastest_time}
-    SLOWEST SINGLE TIME     {slowest_time}
-    AVERAGE SINGLE TIME     {average_single_time}
+    FASTEST SINGLE TIME     {fastest_time} ms
+    SLOWEST SINGLE TIME     {slowest_time} ms
+    AVERAGE SINGLE TIME     {average_single_time} ms
 
     Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
 
