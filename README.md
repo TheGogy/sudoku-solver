@@ -1,10 +1,11 @@
 # <a name="intro"></a>Sudoku Solver using Exact Cover
-This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my - relatively modern as of 2022 - laptop, can solve a "hard" sudoku in an average of 2.74 milliseconds and a "very easy" sudoku in an average of 1.28 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
+This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my - relatively modern as of 2022 - laptop, can solve a "hard" sudoku in an average of 2.1 milliseconds and a "very easy" sudoku in an average of 1.1 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
 
 
 ## <a name="links"></a>Links
 - [Intro](#intro)
 - [Usage](#usage)
+- [Test package](#test_scripts/usage_test_package)
 - [Exact Cover](#exact_cover)
 - [My implementation](#my_implementation)
 - [Edge Cases and drawbacks](#edge_cases)
@@ -14,6 +15,8 @@ This is my solution to the problem proposed by CW1 of the AI module. It is an ag
 - [References](#references)
 
 # <a name="usage"></a>How to use the solver
+
+## <a name="usage_solver"></a>Solver - `sudoku.py`
 To use the solver, pass a `numpy.ndarray((9x9)<sudoku>)` to `sudoku.py`. The test script included (`test_sudoku.py`) contains examples of how to do this and examples of input are stored in numpy arrays in `/data`.
 
 ```py
@@ -27,6 +30,40 @@ solution = sudoku_solver(initial_state)
 ```
 
 The solver will return the solved sudoku in the form  `numpy.ndarray((9x9)<solution)`. If the sudoku has multiple possible solutions, the solver will return the first one it finds.
+
+## <a name="usage_test_script"></a>Test script - `test_sudoku.py`
+I have included a test script `test_sudoku.py`, that implements the test package `/test_scripts/` (see below) with the sudoku solver.
+
+ Usage is as follows:
+ ```
+Usage:
+    test_sudoku.py [ -q , -p , -o , -h|-n|-m|-f ] <batches | filename>
+
+Tests sudoku solver with various puzzles.
+
+Options:
+    -h, --help              Show help.
+
+    -n, --normal            Run test as normal.
+
+    -m, --multiple          Run <batches> tests of normal test.
+
+    -f, --file              Solve a sudoku stored in a file
+                            [*.txt, *.npy]
+
+    -o, --output-to-file    Output the solutions to a .npy file
+                            (use with -f)
+
+    -p, --use-process-time  Use time.process_time() instead of
+                            time.perf_counter()
+
+    -q, --quit-after        Stop solving sudokus after it has solved a certain
+                            number. Used with "-f" on .npy and .csv files.
+ ```
+
+
+
+<br />
 
 # <a name="exact_cover"></a>Exact Cover
 
@@ -67,25 +104,85 @@ Otherwise:
     choose a column, c (deterministically).
     Choose a row, r, such that A[r, c] = 1 (nondeterministically).
     Include r in the partial solution.
-    For each j such that A[r, j] = 1,
+    For each column j such that A[r, j] = 1,
         delete column j from matrix A;
-        for each i such that A[i, j] = 1,
+        for each row i such that A[i, j] = 1,
             delete row i from matrix A.
     Repeat this algorithm recursively on the reduced matrix A.
 ```
 (Knuth, 2000) - [Page 4](https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf)
 
+The above problem can be represented with the matrix:
+
+|     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|:---:|---|---|---|---|---|---|---|
+| A   | 1 | 0 | 0 | 1 | 0 | 0 | 1 |
+| B   | 1 | 0 | 0 | 1 | 0 | 0 | 0 |
+| C   | 0 | 0 | 0 | 1 | 1 | 0 | 1 |
+| D   | 0 | 0 | 1 | 0 | 1 | 1 | 0 |
+| E   | 0 | 1 | 1 | 0 | 0 | 1 | 1 |
+| F   | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
+
+Firstly, as matrix `A` is not empty, the algorithm finds the column with the lowest number of `1`s.
+This is column `1`, that has 1s in rows `A` and `B`.
+
+The algorithm firstly selects row `A` (but remembers row `B` is a possible solution).
+
+Row `A` has `1`s in columns `1`, `4` and `7`. (This is the first `for` loop)
+
+Column `1` has `1`s in rows `A`, `B`. Column `4` has rows in `A`, `B`, `C` and column `7` has `1`s in rows `A`, `C`, `E` and `F`.
+Therefore the only row that does *not* have a `1` in any column that row `A` has a `1` in is row `D`. (this is the second `for` loop.)
+
+This, row `D` is selected and the algorithm repeats.
+
+As the matrix is not empty, the algorithm finds the column with the lowest number of `1`s.
+This is column `2`.
+
+|     | 2 | 3 | 5 | 6 |
+|:---:|---|---|---|---|
+| D   | 0 | 1 | 1 | 1 |
+
+As column `2` does not contain any `1`s, this branch of the algorithm terminates unsuccessfully and the algorithm moves onto the next branch.
+
+Repeating the algorithm, we will eventually end up with:
+
+|     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|:---:|---|---|---|---|---|---|---|
+| B   | 1 | 0 | 0 | 1 | 0 | 0 | 0 |
+| D   | 0 | 0 | 1 | 0 | 1 | 1 | 0 |
+| F   | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
+
+meaning that `S* = {B, D, F}` is the exact cover.
+
+If there are no remaining unsearched branches and no solution has been found, there is no exact cover.
+
 <br />
 
-## <a name="exact_cover_solve"></a>Algorithm X - how to solve exact cover problems
+
+## <a name="exact_cover_solve"></a>How to solve sudoku with this method
+
+Sudoku can be represented as an exact cover problem with a matrix `A` of with dimensions `x` and `y`, where:
+
+`x` represents the set of values that each cell contains, stored in the form `(row, column, value)`
+`y` represents the set of the constraints that each cell must fulfil. There are 4 constraints as outlined below:
+
+- Every cell must contain a value.
+- Every row must contain exactly one of each value.
+- Every column must contain exactly one of each value.
+- Every box must contain exactly one of each value.
+
+Each value in `x` will satisfy a specific combination of values in `y`. No other value in `x` should satisfy these same constraints - for example, if there was a `6` in row `3`, then there cannot be another `6` in row `3`.
+
+Therefore, as every value in `y` needs to be satisfied by *exactly one* value in `x`:
+
+**This can be represented as an exact cover problem where each column is a value in `x` and each row is a value in `y`.**
+
 
 <br />
 
 # <a name="observations"></a>My Observations
 
 While running some tests on the solver, I noticed some rather weird behaviour, which I will do my best to document here.
-
-<br />
 
 ### <a name="observations_1_blank_sudoku"></a>When given a blank sudoku, the solver always returns the same value.
 

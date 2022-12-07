@@ -3,13 +3,21 @@ from time import process_time, perf_counter
 from sudoku import sudoku_solver
 
 def solve_multiple(sudoku_array: np.ndarray,
-                   save_to_file: bool,
-                   use_perf_counter: bool,
+                   save_to_file: str or None,
+                   use_process_time: bool,
                    quit_after: int) -> np.ndarray or None:
     '''
     Solves multiple sudokus and prints the results.
 
-    @args sudoku_array (np.ndarray) : A 3D array of the sudokus to solve
+    @args
+        sudoku_array (np.ndarray) : A 3D array of the sudokus to solve
+        save_to_file (bool) : Whether or not to save the variables
+                                (Can increase processing time)
+
+        use_process_time (bool) : Whether or not to use time.process_time()
+                                  instead of time.perf_counter()
+
+        quit_after (int) : The number of sudokus to stop processing after.
     '''
     total_time = 0
     count = 0
@@ -25,14 +33,14 @@ def solve_multiple(sudoku_array: np.ndarray,
             if count == quit_after: break
             # - - - - - - - - - - - - - - - - - - - #
             # This code is written like this because if it was cleaner it has an impact on performance
-            if use_perf_counter:
-                start_time = perf_counter() * 1000
-                solution = sudoku_solver(sudoku)
-                end_time = perf_counter() * 1000
-            else:
+            if use_process_time:
                 start_time = process_time() * 1000
                 solution = sudoku_solver(sudoku)
                 end_time = process_time() * 1000
+            else:
+                start_time = perf_counter() * 1000
+                solution = sudoku_solver(sudoku)
+                end_time = perf_counter() * 1000
             # - - - - - - - - - - - - - - - - - - - #
             time_taken = end_time - start_time
             total_time += time_taken
@@ -59,7 +67,7 @@ def solve_multiple(sudoku_array: np.ndarray,
     SLOWEST TIME              {slowest} ms
     AVERAGE TIME              {total_time / count} ms
 
-    Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
+    Calculated using time.{"process_time" if use_process_time else "perf_counter"}()
 
 # - - - - - - - - - - - - - - - - - - - - - - - #
             ''')

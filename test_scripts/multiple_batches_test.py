@@ -2,13 +2,13 @@ import numpy as np
 from time import process_time, perf_counter
 from sudoku import sudoku_solver
 
-def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
+def multiple_batches(num_of_batches: int, use_process_time: bool) -> None:
     '''
-    Runs the basic test <num> times.
+    Runs the basic test <num_of_batches> times.
     Calculates fastest batch, slowest batch, fastest single puzzle solve, etc.
     Prints out results.
 
-    @args num (int) : The number of batches to test
+    @args num_of_batches (int) : The number of batches to test
     '''
     script_start_time = process_time()
     total_time = 0
@@ -18,8 +18,8 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
     fastest_time  = 10000
     slowest_time  = 0
     try:
-        for i in range(num):
-            print(f"RUNNING BATCH    {i}/{num}", end="\r")
+        for i in range(num_of_batches):
+            print(f"RUNNING BATCH    {i}/{num_of_batches}", end="\r")
 
             difficulties = ['very_easy', 'easy', 'medium', 'hard']
             batch_time = 0
@@ -32,14 +32,14 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
                     # - - - - - - - - - - - - - - - - - - - #
                     # This code is written like this because if
                     # it was cleaner it seems to have an impact on performance
-                    if use_perf_counter:
-                        start_time = perf_counter() * 1000
-                        solution = sudoku_solver(sudoku)
-                        end_time = perf_counter() * 1000
-                    else:
+                    if use_process_time:
                         start_time = process_time() * 1000
-                        solution = sudoku_solver(sudoku)
+                        sudoku_solver(sudoku)
                         end_time = process_time() * 1000
+                    else:
+                        start_time = perf_counter() * 1000
+                        sudoku_solver(sudoku)
+                        end_time = perf_counter() * 1000
                     # - - - - - - - - - - - - - - - - - - - #
 
                     # The code below is a little ugly.
@@ -92,7 +92,7 @@ def multiple_batches_test(num: int, use_perf_counter: bool) -> None:
     SLOWEST SINGLE TIME     {slowest_time} ms
     AVERAGE SINGLE TIME     {average_single_time} ms
 
-    Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
+    Calculated using time.{"process_time" if use_process_time else "perf_counter"}()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - #
           ''')

@@ -116,14 +116,7 @@ def sudoku_solver(sudoku) -> ndarray or None:
             ("box",  (box, cell))
         ]
 
-#   ______                _
-#  |  ____|              | |
-#  | |__  __  ____ _  ___| |_    ___ _____   _____ _ __
-#  |  __| \ \/ / _` |/ __| __|  / __/ _ \ \ / / _ \ '__|
-#  | |____ >  < (_| | (__| |_  | (_| (_) \ V /  __/ |
-#  |______/_/\_\__,_|\___|\__|  \___\___/ \_/ \___|_|
-
-    # Populate matrix A with possible solutions
+    # Populate matrix A with constraints
     for i, consts in constraints.items():
         for j in consts:
             matrix_A[j].add(i)

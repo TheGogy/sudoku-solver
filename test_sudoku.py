@@ -8,23 +8,23 @@ Usage:
 Tests sudoku solver with various puzzles.
 
 Options:
-    -h, --help                  Show help.
+    -h, --help              Show help.
 
-    -n, --normal                Run test as normal.
+    -n, --normal            Run test as normal.
 
-    -m, --multiple              Run <batches> tests of normal test.
+    -m, --multiple          Run <batches> tests of normal test.
 
-    -f, --file                  Solve a sudoku stored in a file
-                                [*.txt, *.npy]
+    -f, --file              Solve a sudoku stored in a file
+                            [*.txt, *.npy]
 
-    -o, --output-to-file        Output the solutions to a .npy file
-                                (use with -f)
+    -o, --output-to-file    Output the solutions to a .npy file
+                            (use with -f)
 
-    -p, --use-perf-counter-ns   Use time.perf_counter_ns() instead of
-                                time.process_time()
+    -p, --use-process-time  Use time.process_time() instead of
+                            time.perf_counter()
 
-    -q, --quit-after            Stop solving sudokus after it has solved a certain
-                                number. Used with "-f" on .npy and .csv files.
+    -q, --quit-after        Stop solving sudokus after it has solved a certain
+                            number. Used with "-f" on .npy and .csv files.
 
 '''
 
@@ -37,7 +37,7 @@ Options:
 
 def main(argv) -> None:
     output_file=''
-    use_perf_counter = False
+    use_process_time = False
     quit_after = -1
 
     try:
@@ -45,6 +45,8 @@ def main(argv) -> None:
     except getopt.GetoptError as e:
         print("Error: " + e.msg)
         sys.exit(2)
+
+
     for opt, arg in opts:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 
@@ -52,7 +54,7 @@ def main(argv) -> None:
             output_file = arg
 
         if opt in ["-p", "--perf-counter-ns"]:
-            use_perf_counter = True
+            use_process_time = True
 
         if opt in ["-q", "--quit-after"]:
             try:
@@ -68,12 +70,12 @@ def main(argv) -> None:
             sys.exit(0)
 
         elif opt in ("-n", "--normal"):
-            basic_tests(use_perf_counter)
+            basic_tests(use_process_time)
             sys.exit(0)
 
         elif opt in ("-m", "--multiple"):
             try:
-                multiple_batches_test(int(arg), use_perf_counter)
+                multiple_batches(int(arg), use_process_time)
                 sys.exit(0)
 
             except ValueError:
@@ -82,7 +84,7 @@ def main(argv) -> None:
 
         elif opt in ("-f", "--file"):
             if arg.endswith(".txt"):
-                solve_single(load_txt_file(arg), output_file, use_perf_counter)
+                solve_single(load_txt_file(arg), output_file, use_process_time)
                 sys.exit(0)
 
             elif arg.endswith(".npy") or arg.endswith(".csv"):
@@ -92,9 +94,9 @@ def main(argv) -> None:
                     solve_single(
                         sudoku=sudoku_array,
                         output_file=output_file,
-                        use_perf_counter=use_perf_counter)
+                        use_process_time=use_process_time)
                 elif dimensions == 3:
-                    solve_multiple(sudoku_array, output_file, use_perf_counter, quit_after)
+                    solve_multiple(sudoku_array, output_file, use_process_time, quit_after)
                 sys.exit(0)
 
             else:

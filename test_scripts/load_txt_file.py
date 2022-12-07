@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 
-def load_txt_file(file) -> np.ndarray:
+def load_txt_file(filename: str) -> np.ndarray:
     '''
     Loads a sudoku from a .txt file.
 
@@ -9,7 +9,7 @@ def load_txt_file(file) -> np.ndarray:
     @returns loaded_file (np.ndarray) : a NumPy array of the sudoku
     '''
     try:
-        loaded_file =  np.loadtxt(file)
+        loaded_file =  np.loadtxt(filename)
         if not (loaded_file.shape == (9, 9)):
             print("Error: Input sudoku must be a 9x9 grid.")
             sys.exit(2)
@@ -17,7 +17,7 @@ def load_txt_file(file) -> np.ndarray:
             return loaded_file
 
     except FileNotFoundError:
-        print(f'Error: File "{file}" not found.')
+        print(f'Error: File "{filename}" not found.')
         sys.exit(2)
     except ValueError:
         print("Error: Input sudoku must be a 9x9 grid.")

@@ -3,7 +3,7 @@ from time import process_time, perf_counter
 from sudoku import sudoku_solver
 
 
-def basic_tests(use_perf_counter: bool) -> None:
+def basic_tests(use_process_time: bool) -> None:
     '''
     Basic test function (was already provided).
     Tests against each set of puzzles stored in /data/
@@ -33,14 +33,14 @@ def basic_tests(use_perf_counter: bool) -> None:
 
             # - - - - - - - - - - - - - - - - - - - #
             # This code is written like this because if it was cleaner it has an impact on performance
-            if use_perf_counter:
-                start_time = perf_counter()
-                your_solution = sudoku_solver(sudoku)
-                end_time = perf_counter()
-            else:
+            if use_process_time:
                 start_time = process_time()
                 your_solution = sudoku_solver(sudoku)
                 end_time = process_time()
+            else:
+                start_time = perf_counter()
+                your_solution = sudoku_solver(sudoku)
+                end_time = perf_counter()
             # - - - - - - - - - - - - - - - - - - - #
 
             # profiler.disable()
@@ -79,7 +79,7 @@ def basic_tests(use_perf_counter: bool) -> None:
     AVERAGE TIME             {total_time * 1000 / (len(difficulties) * 15)} ms
     TOTAL CORRECT            {total_correct}/{len(difficulties) * 15}
 
-    Calculated using time.{"perf_counter" if use_perf_counter else "process_time"}()
+    Calculated using time.{"process_time" if use_process_time else "perf_counter"}()
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - #
           ''')
