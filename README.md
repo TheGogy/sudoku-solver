@@ -25,7 +25,7 @@ solution = sudoku_solver(initial_state)
 
 ...
 ```
-# <a name="usage"></a>Exact Cover
+# <a name="exact_cover"></a>Exact Cover
 
 # <a name="observations"></a>My Observations
 

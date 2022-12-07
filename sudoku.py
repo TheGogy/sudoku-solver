@@ -1,5 +1,5 @@
 from itertools import product
-import numpy as np
+from numpy import ndarray, add, ndenumerate, full, array
 
 #                      _        __   __
 #                /\   | |       \ \ / /
@@ -79,11 +79,11 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
 #  |______/_/\_\__,_|\___|\__|  \___\___/ \_/ \___|_|
 
 
-def exact_cover_solver(sudoku) -> np.ndarray or None:
+def exact_cover_solver(sudoku) -> ndarray or None:
     '''
     Solves the given sudoku using Donald Knuth's Dancing Links method.
 
-    @args sudoku (np.ndarray) : the sudoku to solve
+    @args sudoku (ndarray) : the sudoku to solve
     @returns: None if sudoku has no solutions
     @returns (generator obj) : Solved sudoku if sudoku has solution
     '''
@@ -120,7 +120,7 @@ def exact_cover_solver(sudoku) -> np.ndarray or None:
             matrix_A[j].add(i)
 
     # Update constraints to reflect initial state
-    for (row, col), cell in np.ndenumerate(sudoku):
+    for (row, col), cell in ndenumerate(sudoku):
         if cell != 0:
             try:
                 select(matrix_A, constraints, (row, col, cell))
@@ -142,16 +142,16 @@ def exact_cover_solver(sudoku) -> np.ndarray or None:
 #  |_|  |_|\__,_|_|_| |_|
 
 
-def sudoku_solver(initial_state) -> np.ndarray:
+def sudoku_solver(initial_state) -> ndarray:
     '''
     Handles input and output of the solver.
 
-    @args initial_state (np.ndarray) : 9x9 array containing sudoku to solve
+    @args initial_state (ndarray) : 9x9 array containing sudoku to solve
     @returns solved sudoku. If no solutions found, return 9x9 grid of "-1".
     '''
     finalSolution = list(exact_cover_solver(initial_state))
     if not finalSolution:
-        return np.full((9, 9), fill_value=-1)
+        return full((9, 9), fill_value=-1)
 
     # Solution exists, return it
-    return np.array(list(finalSolution))[0]
+    return array(list(finalSolution))[0]
