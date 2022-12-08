@@ -123,14 +123,36 @@ The above problem can be represented with the matrix:
 | F   | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
 
 Firstly, as matrix `A` is not empty, the algorithm finds the column with the lowest number of 1s.
-This is column 1, that has 1s in rows A and A.
+This is column 1, that has 1s in rows A and B.
+
+|     | 1 |
+|:---:|---|
+| A   | <span style="color:green">1</span> |
+| B   | <span style="color:green">1</span> |
+| C   | 0 |
+| D   | 0 |
+| E   | 0 |
+| F   | 0 |
 
 The algorithm firstly selects row A (but remembers row B is a possible solution).
 
 Row A has 1s in columns 1, 1 and 7. (This is the first `for` loop)
 
+|     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|:---:|---|---|---|---|---|---|---|
+| A   | <span style="color:green">1</span> | 0 | 0 | <span style="color:green">1</span> | 0 | 0 | <span style="color:green">1</span> |
+
 Column 1 has 1s in rows A, B. Column 4 has rows in A, B, C and column 7 has 1s in rows A, C, E and F.
 Therefore the only row that does *not* have a 1 in the same column as row A is row D. (this is the second `for` loop.)
+
+|     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|:---:|---|---|---|---|---|---|---|
+| A   | <span style="color:red">1</span> | 0 | 0 | <span style="color:red">1</span> | 0 | 0 | <span style="color:red">1</span> |
+| B   | <span style="color:red">1</span> | 0 | 0 | <span style="color:red">1</span> | 0 | 0 | 0 |
+| C   | <span style="color:green">0</span> | 0 | 0 | <span style="color:red">1</span> | 1 | 0 | <span style="color:red">1</span> |
+| D   | <span style="color:green">0</span> | 0 | 1 | <span style="color:green">0</span> | 1 | 1 | <span style="color:green">0</span> |
+| E   | <span style="color:green">0</span> | 1 | 1 | <span style="color:green">0</span> | 0 | 1 | <span style="color:red">1</span> |
+| F   | <span style="color:green">0</span> | 1 | 0 | <span style="color:green">0</span> | 0 | 0 | <span style="color:red">1</span> |
 
 This row `D` is selected and the algorithm repeats.
 
@@ -139,9 +161,9 @@ This is column `2`.
 
 |     | 2 | 3 | 5 | 6 |
 |:---:|---|---|---|---|
-| D   | 0 | 1 | 1 | 1 |
+| D   | <span style="color:green">0</span> | 1 | 1 | 1 |
 
-As column `2` does not contain any `1`s, this branch of the algorithm terminates unsuccessfully and the algorithm moves onto the next branch.
+As column `2` does not contain any `1`s, this branch of the algorithm terminates unsuccessfully and the algorithm moves onto the next branch, which in this case would be row B.
 
 Continuing the algorithm, we will eventually end up with:
 
@@ -188,7 +210,7 @@ While running some tests on the solver, I noticed some rather weird behaviour, w
 ### <a name="observations_1_blank_sudoku"></a>When given a blank sudoku, the solver always returns the same value.
 
 When the sudoku solver is given an array of zeros, it will consistently return the same solution, as it is the first solution it reaches.
-Why it is this specific solution, I am unsure. I have not found any explanation online, although I think it would be interesting to see if other implementations of exact cover reach the same solution when given an empty initial state.
+Why it is this specific solution, I am unsure. I have not found any explanation online, although I think it would be interesting to see if other implementations of algorithm X reach the same solution when given an empty initial state.
 
 ```
 [[4. 7. 1. 3. 8. 6. 5. 9. 2.]
@@ -208,7 +230,7 @@ Why it is this specific solution, I am unsure. I have not found any explanation 
 ### <a name="changes_input_var"></a>The sudoku will update the values of the input variable instead of returning a copy
 In my testing, I found that it was significantly faster for the sudoku to simply apply the solutions to the initial_state array by changing its values, as it does not need to create a second NumPy array to store the answers in.
 
-This has the drawback of updating the values of the input sudoku, so the initial state is now solved.
+This has the drawback of updating the values of the input sudoku, so the initial state variable will be solved.
 
 I found that the benefits of this - i.e. the increase in speed - outweighed the drawbacks and so I chose to implement this.
 
