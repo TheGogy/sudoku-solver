@@ -113,6 +113,9 @@ Otherwise:
 
 The above problem can be represented with the matrix:
 
+> **Note**
+> This explanation uses LaTeX to render some values. If your device does not render them, this same example is shown on [this wikipedia article](https://wikipedia.org/wiki/Knuth%27s_Algorithm_X?lang=en#Example).
+
 |     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:---:|---|---|---|---|---|---|---|
 | A   | 1 | 0 | 0 | 1 | 0 | 0 | 1 |
