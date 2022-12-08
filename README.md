@@ -127,8 +127,8 @@ This is column 1, that has 1s in rows A and B.
 
 |     | 1 |
 |:---:|---|
-| A   | <span style="color:green">1</span> |
-| B   | <span style="color:green">1</span> |
+| A   | $${\color{green}1}$$ |
+| B   | $${\color{green}1}$$ |
 | C   | 0 |
 | D   | 0 |
 | E   | 0 |
@@ -136,23 +136,23 @@ This is column 1, that has 1s in rows A and B.
 
 The algorithm firstly selects row A (but remembers row B is a possible solution).
 
-Row A has 1s in columns 1, 1 and 7. (This is the first `for` loop)
+Row A has 1s in columns 1, 4 and 7. (This is the first `for` loop)
 
 |     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:---:|---|---|---|---|---|---|---|
-| A   | <span style="color:green">1</span> | 0 | 0 | <span style="color:green">1</span> | 0 | 0 | <span style="color:green">1</span> |
+| A   | $${\color{green}1}$$ | 0 | 0 | $${\color{green}1}$$ | 0 | 0 |$${\color{green}1}$$ |
 
 Column 1 has 1s in rows A, B. Column 4 has rows in A, B, C and column 7 has 1s in rows A, C, E and F.
 Therefore the only row that does *not* have a 1 in the same column as row A is row D. (this is the second `for` loop.)
 
 |     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:---:|---|---|---|---|---|---|---|
-| A   | <span style="color:red">1</span> | 0 | 0 | <span style="color:red">1</span> | 0 | 0 | <span style="color:red">1</span> |
-| B   | <span style="color:red">1</span> | 0 | 0 | <span style="color:red">1</span> | 0 | 0 | 0 |
-| C   | <span style="color:green">0</span> | 0 | 0 | <span style="color:red">1</span> | 1 | 0 | <span style="color:red">1</span> |
-| D   | <span style="color:green">0</span> | 0 | 1 | <span style="color:green">0</span> | 1 | 1 | <span style="color:green">0</span> |
-| E   | <span style="color:green">0</span> | 1 | 1 | <span style="color:green">0</span> | 0 | 1 | <span style="color:red">1</span> |
-| F   | <span style="color:green">0</span> | 1 | 0 | <span style="color:green">0</span> | 0 | 0 | <span style="color:red">1</span> |
+| A   | $${\color{red}1}$$ | 0 | 0 | $${\color{red}1}$$ | 0 | 0 | $${\color{red}1}$$ |
+| B   | $${\color{red}1}$$ | 0 | 0 | $${\color{red}1}$$ | 0 | 0 | $${\color{green}0}$$ |
+| C   | $${\color{green}0}$$ | 0 | 0 | $${\color{red}1}$$ | 1 | 0 | $${\color{red}1}$$ |
+| D   | $${\color{green}0}$$ | 0 | 1 | $${\color{green}0}$$ | 1 | 1 | $${\color{green}0}$$ |
+| E   | $${\color{green}0}$$ | 1 | 1 | $${\color{green}0}$$ | 0 | 1 | $${\color{red}1}$$ |
+| F   | $${\color{green}0}$$ | 1 | 0 | $${\color{green}0}$$ | 0 | 0 | $${\color{red}1}$$ |
 
 This row `D` is selected and the algorithm repeats.
 
@@ -161,7 +161,7 @@ This is column `2`.
 
 |     | 2 | 3 | 5 | 6 |
 |:---:|---|---|---|---|
-| D   | <span style="color:green">0</span> | 1 | 1 | 1 |
+| D   | $${\color{green}0}$$ | 1 | 1 | 1 |
 
 As column `2` does not contain any `1`s, this branch of the algorithm terminates unsuccessfully and the algorithm moves onto the next branch, which in this case would be row B.
 
@@ -169,15 +169,15 @@ Continuing the algorithm, we will eventually end up with:
 
 |     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:---:|---|---|---|---|---|---|---|
-| B   | 1 | 0 | 0 | 1 | 0 | 0 | 0 |
-| D   | 0 | 0 | 1 | 0 | 1 | 1 | 0 |
-| F   | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
+| B   | $${\color{green}1}$$ | 0 | 0 | $${\color{green}1}$$ | 0 | 0 | 0 |
+| D   | 0 | 0 | $${\color{green}1}$$ | 0 | $${\color{green}1}$$ | $${\color{green}1}$$ | 0 |
+| F   | 0 | $${\color{green}1}$$ | 0 | 0 | 0 | 0 |$${\color{green}1}$$ |
 
 meaning that `S* = {B, D, F}` is the exact cover.
 
 If there are no remaining unsearched branches and no solution has been found, there is no exact cover.
 
-For a step by step version of this process, please see the [Wikipedia article](https://wikipedia.org/wiki/Knuth%27s_Algorithm_X?lang=en#Example)
+For a step by step version of this process, please see the [Wikipedia article](https://wikipedia.org/wiki/Knuth%27s_Algorithm_X?lang=en#Example).
 
 <br />
 
