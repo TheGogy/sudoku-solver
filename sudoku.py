@@ -1,5 +1,4 @@
 from itertools import product
-import numpy as np
 from numpy import ndarray, add, ndenumerate, full, array, size
 
 #                      _        __   __
@@ -128,7 +127,7 @@ def sudoku_solver(sudoku) -> ndarray or None:
                 select(matrix_A, constraints, (row, col, cell))
             except KeyError:
                 # Sudoku is not solvable
-                return np.full((9, 9), fill_value=-1)
+                return full((9, 9), fill_value=-1)
 
     # find solution and update initial state with it
     for solution in find_solution(matrix_A, constraints, []):
@@ -136,4 +135,4 @@ def sudoku_solver(sudoku) -> ndarray or None:
             sudoku[row][col] = val
         return sudoku
 
-    return np.full((9, 9), fill_value=-1)
+    return full((9, 9), fill_value=-1)
