@@ -33,19 +33,19 @@ def multiple_batches(num_of_batches: int, use_process_time: bool) -> None:
                     # This code is written like this because if
                     # it was cleaner it seems to have an impact on performance
                     if use_process_time:
-                        start_time = process_time() * 1000
+                        start_time = process_time()
                         sudoku_solver(sudoku)
-                        end_time = process_time() * 1000
+                        end_time = process_time()
                     else:
-                        start_time = perf_counter() * 1000
+                        start_time = perf_counter()
                         sudoku_solver(sudoku)
-                        end_time = perf_counter() * 1000
+                        end_time = perf_counter()
                     # - - - - - - - - - - - - - - - - - - - #
 
                     # The code below is a little ugly.
                     # It keeps track of the fastest and slowest
                     # individual solves and batch solves.
-                    time_taken = end_time - start_time
+                    time_taken = (end_time - start_time) * 1000
                     batch_time += time_taken
 
                     if time_taken < fastest_time_from_batch:

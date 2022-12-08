@@ -3,7 +3,7 @@ from test_scripts import *
 
 help = '''
 Usage:
-    test_sudoku.py [ -q , -p , -o , -h|-n|-m|-f ] <batches | filename>
+    test_sudoku.py [ -q , -p , -o , -h|-n|-m|-f|-e ] <batches | filename | edge case>
 
 Tests sudoku solver with various puzzles.
 
@@ -26,6 +26,8 @@ Options:
     -q, --quit-after        Stop solving sudokus after it has solved a certain
                             number. Used with "-f" on .npy and .csv files.
 
+    -e, --edge-case         Run specified edge case [allzero, presolved]
+
 '''
 
 #   __  __       _
@@ -39,9 +41,12 @@ def main(argv) -> None:
     output_file=''
     use_process_time = False
     quit_after = -1
+    commands_verbose_list = ["use-perf-counter-ns", "output-to-file",
+                             "help", "normal", "multiple=", "file=",
+                             "quit-after=", "edge-case="]
 
     try:
-        opts, args = getopt.getopt(argv,"q:pohnm:f:", ["use-perf-counter-ns", "output-to-file", "help", "normal", "multiple=", "file=", "quit-after="])
+        opts, args = getopt.getopt(argv,"q:pohnm:f:e:", commands_verbose_list)
     except getopt.GetoptError as e:
         print("Error: " + e.msg)
         sys.exit(2)
@@ -104,6 +109,17 @@ def main(argv) -> None:
 
                 sys.exit(0)
 
+        elif opt in ("-e", "--edge-case"):
+            if arg == "allzero":
+                all_zeros_test(use_process_time)
+                sys.exit(0)
+
+            elif arg == "presolved":
+                already_solved_test(use_process_time)
+                sys.exit(0)
+            else:
+                print(f'Error: Unknown edge case "{arg}". Known edge cases: allzero, presolved')
+                sys.exit(2)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 
     print(help)

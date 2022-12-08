@@ -6,6 +6,7 @@
 - [Test package](/test_scripts/README.md/#title)
 - [Exact Cover](#exact_cover)
 - [My observations](#observations)
+- [Drawbacks and limitations](#drawbacks)
 - [References](#references)
 
 
@@ -200,6 +201,17 @@ Why it is this specific solution, I am unsure. I have not found any explanation 
  [3. 2. 4. 6. 7. 1. 9. 8. 5.]
  [5. 1. 8. 4. 9. 3. 2. 7. 6.]]
 ```
+
+<br />
+
+# <a name="drawbacks"></a>Drawbacks and limitations
+### <a name="changes_input_var"></a>The sudoku will update the values of the input variable instead of returning a copy
+In my testing, I found that it was significantly faster for the sudoku to simply apply the solutions to the initial_state array by changing its values, as it does not need to create a second NumPy array to store the answers in.
+
+This has the drawback of updating the values of the input sudoku, so the initial state is now solved.
+
+I found that the benefits of this - i.e. the increase in speed - outweighed the drawbacks and so I chose to implement this.
+
 
 <br />
 

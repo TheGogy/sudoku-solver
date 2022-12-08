@@ -34,15 +34,15 @@ def solve_multiple(sudoku_array: np.ndarray,
             # - - - - - - - - - - - - - - - - - - - #
             # This code is written like this because if it was cleaner it has an impact on performance
             if use_process_time:
-                start_time = process_time() * 1000
+                start_time = process_time()
                 solution = sudoku_solver(sudoku)
-                end_time = process_time() * 1000
+                end_time = process_time()
             else:
-                start_time = perf_counter() * 1000
+                start_time = perf_counter()
                 solution = sudoku_solver(sudoku)
-                end_time = perf_counter() * 1000
+                end_time = perf_counter()
             # - - - - - - - - - - - - - - - - - - - #
-            time_taken = end_time - start_time
+            time_taken = (end_time - start_time) * 1000
             total_time += time_taken
             if time_taken < fastest:
                 fastest = time_taken

@@ -15,6 +15,7 @@ def basic_tests(use_process_time: bool) -> None:
 
     total_time = 0
     total_correct = 0
+    hardest_time = 0
 
     script_start_time = perf_counter()
     for difficulty in difficulties:
@@ -50,6 +51,12 @@ def basic_tests(use_process_time: bool) -> None:
             time_taken = end_time - start_time
             total_time += time_taken
 
+            if time_taken > hardest_time:
+                hardest_time = time_taken
+                hardest_sudoku = sudokus[i]
+                hardest_number = (difficulty, i)
+                hardest_solution = your_solution
+
             print(f"This is your solution for {difficulty} sudoku number", i)
             print(your_solution)
 
@@ -70,6 +77,12 @@ def basic_tests(use_process_time: bool) -> None:
     script_end_time = perf_counter()
 
     print(f'''
+# - - - - - - - - [ Hardest Sudoku ] - - - - - - - - #
+    THIS IS "{hardest_number[0]}" SUDOKU NUMBER {hardest_number[1]}
+{hardest_sudoku}
+# - - - - - - - - - - [ solution ] - - - - - - - - - #
+{hardest_solution}
+    TIME TAKEN               {hardest_time}ms
 # - - - - - - - - - - - - - - - - - - - - - - - - - #
 
     Solved {total_correct} sudokus in {round(script_end_time - script_start_time, 3)} seconds.

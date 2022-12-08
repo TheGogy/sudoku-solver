@@ -22,6 +22,30 @@ import test_scripts
 test_scripts.basic_tests(use_process_time=...)
 ```
 
+## <a name="all_zeros_test"></a>**all_zeros_test**
+Tests the solver by giving it a blank sudoku, i.e. a `(9,9)` NumPy array of `0`s.
+
+It takes the argument `use_process_time`. If this is `True`, `time.process_time()` will be used to measure how long the sudoku solver takes. Otherwise it will use `time.perf_counter`.
+
+Usage:
+```py
+import test_scripts
+
+test_scripts.all_zeros_test(use_process_time=...)
+```
+
+## <a name="already_solved_test"></a>**already_solved_test**
+Tests the solver by giving it a solved sudoku. The solver should output the
+
+It takes the argument `use_process_time`. If this is `True`, `time.process_time()` will be used to measure how long the sudoku solver takes. Otherwise it will use `time.perf_counter`.
+
+Usage:
+```py
+import test_scripts
+
+test_scripts.all_zeros_test(use_process_time=...)
+```
+
 ## <a name="load_array"></a>**load_array**
 Loads an array from a `.npy` or a `.csv` file. If the file does not exist, or appears to be of incorrect format to be a sudoku, raise an error.
 
