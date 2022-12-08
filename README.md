@@ -1,14 +1,3 @@
-<style>
-greentext {
-    color: #00FF00;
-}
-redtext {
-    color: #FF4040;
-}
-</style>
-
-
-
 # <a name="intro"></a>**Sudoku Solver using Exact Cover and Algorithm X**
 
 ## <a name="links"></a>Links
@@ -139,8 +128,8 @@ This is column 1, that has 1s in rows A and B.
 
 |     | 1 |
 |:---:|---|
-| A   | <greentext>1</greentext> |
-| B   | <greentext>1</greentext> |
+| A   | **1** |
+| B   | **1** |
 | C   | 0 |
 | D   | 0 |
 | E   | 0 |
@@ -152,19 +141,19 @@ Row A has 1s in columns 1, 4 and 7. (This is the first `for` loop)
 
 |     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:---:|---|---|---|---|---|---|---|
-| A   | <greentext>1</greentext> | 0 | 0 | <greentext>1</greentext> | 0 | 0 |<greentext>1</greentext> |
+| A   | **1** | 0 | 0 | **1** | 0 | 0 |**1** |
 
 Column 1 has 1s in rows A, B. Column 4 has rows in A, B, C and column 7 has 1s in rows A, C, E and F.
 Therefore the only row that does *not* have a 1 in the same column as row A is row D. (this is the second `for` loop.)
 
 |     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:---:|---|---|---|---|---|---|---|
-| A   | <redtext>1</redtext> | 0 | 0 | <redtext>1</redtext> | 0 | 0 | <redtext>1</redtext> |
-| B   | <redtext>1</redtext> | 0 | 0 | <redtext>1</redtext> | 0 | 0 | <greentext>0</greentext> |
-| C   | <greentext>0</greentext> | 0 | 0 | <redtext>1</redtext> | 1 | 0 | <redtext>1</redtext> |
-| D   | <greentext>0</greentext> | 0 | 1 | <greentext>0</greentext> | 1 | 1 | <greentext>0</greentext> |
-| E   | <greentext>0</greentext> | 1 | 1 | <greentext>0</greentext> | 0 | 1 | <redtext>1</redtext> |
-| F   | <greentext>0</greentext> | 1 | 0 | <greentext>0</greentext> | 0 | 0 | <redtext>1</redtext> |
+| A   | **1** | 0 | 0 | **1** | 0 | 0 | **1** |
+| B   | **1** | 0 | 0 | **1** | 0 | 0 | **0** |
+| C   | **0** | 0 | 0 | **1** | 1 | 0 | **1** |
+| D   | **0** | 0 | 1 | **0** | 1 | 1 | **0** |
+| E   | **0** | 1 | 1 | **0** | 0 | 1 | **1** |
+| F   | **0** | 1 | 0 | **0** | 0 | 0 | **1** |
 
 Therefore, row `D` is selected and the algorithm repeats.
 
@@ -173,7 +162,7 @@ This is column `2`.
 
 |     | 2 | 3 | 5 | 6 |
 |:---:|---|---|---|---|
-| D   | <greentext>0</greentext> | 1 | 1 | 1 |
+| D   | **0** | 1 | 1 | 1 |
 
 As column `2` does not contain any `1`s, this branch of the algorithm terminates unsuccessfully and the algorithm moves onto the next branch, which in this case would be row B.
 
@@ -181,9 +170,9 @@ Continuing the algorithm, we will eventually end up with:
 
 |     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:---:|---|---|---|---|---|---|---|
-| B   | <greentext>1</greentext> | 0 | 0 | <greentext>1</greentext> | 0 | 0 | 0 |
-| D   | 0 | 0 | <greentext>1</greentext> | 0 | <greentext>1</greentext> | <greentext>1</greentext> | 0 |
-| F   | 0 | <greentext>1</greentext> | 0 | 0 | 0 | 0 |<greentext>1</greentext> |
+| B   | **1** | 0 | 0 | **1** | 0 | 0 | 0 |
+| D   | 0 | 0 | **1** | 0 | **1** | **1** | 0 |
+| F   | 0 | **1** | 0 | 0 | 0 | 0 |**1** |
 
 meaning that `S* = {B, D, F}` is the exact cover.
 
