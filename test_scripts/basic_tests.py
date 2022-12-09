@@ -78,11 +78,11 @@ def basic_tests(use_process_time: bool) -> None:
 
     print(f'''
 # - - - - - - - - [ Hardest Sudoku ] - - - - - - - - #
-    THIS IS "{hardest_number[0]}" SUDOKU NUMBER {hardest_number[1]}
+THIS IS "{hardest_number[0]}" SUDOKU NUMBER {hardest_number[1]}
 {hardest_sudoku}
 # - - - - - - - - - - [ solution ] - - - - - - - - - #
 {hardest_solution}
-    TIME TAKEN               {hardest_time}ms
+TIME TAKEN               {hardest_time * 1000}ms
 # - - - - - - - - - - - - - - - - - - - - - - - - - #
 
     Solved {total_correct} sudokus in {round(script_end_time - script_start_time, 3)} seconds.
