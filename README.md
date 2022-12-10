@@ -11,7 +11,7 @@
 
 
 # <a name="intro"></a>Intro
-This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my - relatively modern as of 2022 - laptop, can solve a "hard" sudoku in an average of 2.1 milliseconds and a "very easy" sudoku in an average of 1.1 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
+This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my - relatively modern as of 2022 - laptop, can solve a "hard" sudoku in an average of 5 milliseconds and a "very easy" sudoku in an average of 2 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
 
 # <a name="usage"></a>How to use the solver
 
@@ -187,8 +187,8 @@ For a step by step version of this process, please see the [Wikipedia article](h
 
 Sudoku can be represented as an exact cover problem with a matrix `A` of with dimensions `x` and `y`, where:
 
-`x` represents the set of values that each cell contains, stored in the form `(row, column, value)`
-`y` represents the set of the constraints that each cell must fulfil. There are 4 constraints as outlined below:
+- `x` represents the set of values that each cell contains, stored in the form `(row, column, value)`
+- `y` represents the set of the constraints that each cell must fulfil. There are 4 constraints as outlined below:
 
 - Every cell must contain a value.
 - Every row must contain exactly one of each value.
@@ -200,6 +200,160 @@ Each value in `x` will satisfy a specific combination of values in `y`. No other
 Therefore, as every value in `y` needs to be satisfied by *exactly one* value in `x`:
 
 **This can be represented as an exact cover problem where each column is a value in `x` and each row is a value in `y`.**
+
+## <a name="exact_cover_solve"></a>So what does that look like?
+
+The solver firstly constructs `matrix_A`. The code for this is as follows:
+```py
+matrix_A = (
+        [("cell", i) for i in product (range(9), range(9)    )] +
+        [("row",  i) for i in product (range(9), range(1, 10))] +
+        [("col",  i) for i in product (range(9), range(1, 10))] +
+        [("box",  i) for i in product (range(9), range(1, 10))]
+        )
+    matrix_A = {j: set() for j in matrix_A}
+
+    constraints = dict()
+    for row, col, cell in product(range(9), range(9), range(1, 10)):
+        box = (row // 3) * 3 + (col // 3)
+        # Boxes are labelled like this:
+        #   0 1 2
+        #   3 4 5
+        #   6 7 8
+        constraints[(row, col, cell)] = [
+            # Each cell must have a value
+            ("cell", (row, col)),
+            # Each row must have each value
+            ("row",  (row, cell)),
+            # Each column must have each value
+            ("col",  (col, cell)),
+            # Each box must have each value
+            ("box",  (box, cell))
+        ]
+
+    # Populate matrix A with constraints
+    for i, consts in constraints.items():
+        for j in consts:
+            matrix_A[j].add(i)
+```
+
+This creates a matrix as follows:
+
+|     | (0,0,1) | (0,0,2) | (0,0,3) | (0,0,4) |
+|:---:|:---:|:---:|:---:|
+| cell (0,0) contains value     | 1 | 0 | 0 |
+| cell (0,1) contains value     | 1 | 0 | 0 |
+| cell (...) contains value     | ... | ... | ... |
+| row  (0)   contains value 1   | 1 | 0 | 0 |
+| row  (0)   contains value 2   | 0 | 1 | 0 |
+| row  (...) contains value ... | ... | ... | ... |
+| col  (0)   contains value 1   | 1 | 0 | 0 |
+| col  (0)   contains value 2   | 0 | 1 | 0 |
+| col  (...) contains value ... | ... | ... | ... |
+| box  (0)   contains value 1   | 1 | 0 | 0 |
+| box  (0)   contains value 2   | 0 | 1 | 0 |
+| box  (...) contains value ... | ... | ... | ... |
+
+
+Once the initial matrix has been generated, we can update the constraints to reflect the initial state - to remove the rows and columns that we know are incorrect. If our original sudoku contains the value `(0,5,3)`, for example, then we can remove all columns that imply a different value at that location, such as `(0,5,2)`.
+
+This is completed using:
+```py
+    # Update constraints to reflect initial state
+    for (row, col), cell in ndenumerate(sudoku):
+        if cell != 0:
+            try:
+                select(matrix_A, constraints, (row, col, cell))
+            except KeyError:
+                # Sudoku is not solvable
+                return full((9, 9), fill_value=-1)
+```
+
+If the solver is given a sudoku with conflicting values, this will be caught with the `except KeyError` statement.
+
+We can then proceed onto **Algorithm X**.
+```py
+# find solution and update initial state with it
+for solution in find_solution(matrix_A, constraints, []):
+    for (row, col, val) in solution:
+        sudoku[row][col] = val
+    return sudoku
+```
+```py
+def find_solution(matrix_A, constraints, solution=[]) -> list:
+    '''
+    Recursively attempts to find a solution
+
+    @args
+        matrix_A: The search space matrix
+        constraints: The constraints matrix
+        solution: The state to find (or not find) soltion for
+
+    @returns list: The solution
+    '''
+    if not matrix_A:
+        # There are no constraints left to fulfil; sudoku solved.
+        yield list(solution)
+    else:
+        col = min(matrix_A, key=lambda i: len(matrix_A[i]))
+        for row in list(matrix_A[col]):
+            solution.append(row)
+            cols = select(matrix_A, constraints, row)
+
+            # Keep trying to find solution recursively
+            for i in find_solution(matrix_A, constraints, solution): yield i
+
+            # This row does not have a solution, deselect it
+            deselect(matrix_A, constraints, row, cols)
+            solution.pop()
+```
+This is the recursive backtracking algorithm that attempts to find the solution to the given sudoku.
+
+If `matrix_A` is empty, we have fulfilled all the constraints and thus solved the sudoku.
+
+Otherwise, find the column with the fewest values in `matrix_A`. This is the selected column. Append it to the partial solution.
+
+The associated rows and columns are then removed from the matrix:
+```py
+def select(matrix_A, constraints, row):
+    '''
+    removes associated rows, cols from matrix
+    @args:
+        matrix_A: the search space matrix
+        constraints: the constraints matrix
+        row: The row to be selected
+    '''
+    cols = []
+    for i in constraints[row]:
+        for j in matrix_A[i]:
+            for k in constraints[j]:
+                if k != i:
+                    matrix_A[k].remove(j)
+        cols.append(matrix_A.pop(i))
+    return cols
+```
+
+And the program recursivly tries again.
+
+If the program has exhausted all the possible solutions on a given branch, it will then deselect it and return the removed values back into matrix A:
+
+```py
+def deselect(matrix_A, constraints, row, cols) -> None:
+    '''
+    Restores a branch with a no solutions back into matrix_A
+
+    @args
+        matrix_A: The search space matrix
+        constraints: the constraints matrix
+        row, cols: value to restore to matrix A
+    '''
+    for i in reversed(constraints[row]):
+        matrix_A[i] = cols.pop()
+        for j in matrix_A[i]:
+            for k in constraints[j]:
+                if k != i:
+                    matrix_A[k].add(j)
+```
 
 
 <br />

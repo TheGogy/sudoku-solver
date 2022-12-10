@@ -12,8 +12,7 @@ from numpy import ndarray, add, ndenumerate, full, array, size
 
 def select(matrix_A, constraints, row):
     '''
-    Adds the given row to possible solutions and removes
-    associated rows from matrix
+    removes associated rows, cols from matrix
     @args:
         matrix_A: the search space matrix
         constraints: the constraints matrix
@@ -30,8 +29,8 @@ def select(matrix_A, constraints, row):
 
 def deselect(matrix_A, constraints, row, cols) -> None:
     '''
-    Removes a potential solution from the possible solutions
-    and restores it into matrix A
+    Restores a branch with a no solutions back into matrix_A
+
     @args
         matrix_A: The search space matrix
         constraints: the constraints matrix
@@ -59,7 +58,7 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
         # There are no constraints left to fulfil; sudoku solved.
         yield list(solution)
     else:
-        col = min(matrix_A, key=lambda d: len(matrix_A[d]))
+        col = min(matrix_A, key=lambda i: len(matrix_A[i]))
         for row in list(matrix_A[col]):
             solution.append(row)
             cols = select(matrix_A, constraints, row)
@@ -67,7 +66,7 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
             # Keep trying to find solution recursively
             for i in find_solution(matrix_A, constraints, solution): yield i
 
-            # This row does not have a solution, deselect it
+            # This branch does not have a solution, deselect it
             deselect(matrix_A, constraints, row, cols)
             solution.pop()
 
@@ -89,13 +88,12 @@ def sudoku_solver(sudoku) -> ndarray or None:
     @returns (generator obj) : Solved sudoku if sudoku has solution
     '''
 
-    matrix_A = (
+    matrix_A = {j: set() for j in(
         [("cell", i) for i in product (range(9), range(9)    )] +
         [("row",  i) for i in product (range(9), range(1, 10))] +
         [("col",  i) for i in product (range(9), range(1, 10))] +
         [("box",  i) for i in product (range(9), range(1, 10))]
-        )
-    matrix_A = {j: set() for j in matrix_A}
+        )}
 
     constraints = dict()
     for row, col, cell in product(range(9), range(9), range(1, 10)):
