@@ -240,7 +240,7 @@ matrix_A = (
 This creates a matrix as follows:
 
 |     | (0,0,1) | (0,0,2) | (0,0,3) | (0,0,4) |
-|:---:|:---:|:---:|:---:|
+|:---:|:---:|:---:|:---:|:---:|
 | cell (0,0) contains value     | 1 | 0 | 0 |
 | cell (0,1) contains value     | 1 | 0 | 0 |
 | cell (...) contains value     | ... | ... | ... |
