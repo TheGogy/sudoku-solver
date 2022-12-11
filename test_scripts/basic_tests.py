@@ -66,6 +66,7 @@ def basic_tests(use_process_time: bool) -> None:
                 count += 1
                 total_correct += 1
             else:
+                count +=1 
                 print("No, the correct solution is:")
                 print(solutions[i])
 
