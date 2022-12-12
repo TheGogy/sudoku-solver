@@ -1,5 +1,12 @@
 from itertools import product
-from numpy import ndarray, add, ndenumerate, full, array, size
+from numpy import (
+    ndarray,
+    add,
+    ndenumerate,
+    full,
+    array,
+    size
+)
 
 #                      _        __   __
 #                /\   | |       \ \ / /
@@ -40,8 +47,7 @@ def deselect(matrix_A, constraints, row, cols) -> None:
         matrix_A[i] = cols.pop()
         for j in matrix_A[i]:
             for k in constraints[j]:
-                if k != i:
-                    matrix_A[k].add(j)
+                matrix_A[k].add(j)
 
 def find_solution(matrix_A, constraints, solution=[]) -> list:
     '''
@@ -98,7 +104,7 @@ def choose_col(matrix_A, constraints):
             # Do not waste time if we have already found a column with only
             # one value
             if cur_col_val == 1:
-                break
+                return best_col
 
     return best_col
 

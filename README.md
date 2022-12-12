@@ -463,14 +463,16 @@ This reduced the average solve time of any given puzzle from about 2ms to about 
 <br />
 
 # <a name="references"></a>References
-Knuth,D. 2000. Dancing Links. https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf
+Knuth,D. 2000. Dancing Links. https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf [accessed Dec 2022]
 
-Wikipedia, 2022. Dancing Links. https://wikipedia.org/wiki/Dancing_Links?lang=en
+Wikipedia, 2022. Dancing Links. https://wikipedia.org/wiki/Dancing_Links?lang=en [accessed Dec 2022]
 
-Wikipedia, 2022. Exact cover. https://wikipedia.org/wiki/Exact_cover?lang=en
+Wikipedia, 2022. Exact cover. https://wikipedia.org/wiki/Exact_cover?lang=en [accessed Dec 2022]
 
-Wikipedia, 2022. Knuth's Algorithm X. https://wikiless.org/wiki/Knuth%27s_Algorithm_X?lang=en
+Wikipedia, 2022. Knuth's Algorithm X. https://wikiless.org/wiki/Knuth%27s_Algorithm_X?lang=en [accessed Dec 2022]
 
-Ascii art to clearly show sections of code: https://patorjk.com/software/taag/#p=display&f=Big
+Ascii art to clearly show sections of code: https://patorjk.com/software/taag/#p=display&f=Big [accessed Dec 2022]
 
-Unsolveable #28, the "hardest sudoku ever created", according to [Sudoku Wiki](https://www.sudokuwiki.org/Arto_Inkala_Sudoku) (found when looking for more sudokus like Arto Inkala's): https://www.sudokuwiki.org/Weekly_Sudoku.asp?puz=28
+Unsolveable #28, the "hardest sudoku ever created", according to [Sudoku Wiki](https://www.sudokuwiki.org/Arto_Inkala_Sudoku) (found when looking for more sudokus like Arto Inkala's): https://www.sudokuwiki.org/Weekly_Sudoku.asp?puz=28 [accessed Dec 2022]
+
+pyutils, 2022. line_profiler https://github.com/pyutils/line_profiler [accessed Dec 2022]
