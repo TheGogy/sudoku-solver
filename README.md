@@ -4,9 +4,9 @@
 - [Intro](#intro)
 - [Usage](#usage)
 - [Test package](/test_scripts/README.md/#title)
-- [Exact Cover](#exact_cover)
+- [Exact Cover and my implementation](#exact_cover)
 - [My observations](#observations)
-- [Drawbacks and limitations](#drawbacks)
+- [improvements](#improvements)
 - [References](#references)
 
 
@@ -295,7 +295,7 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
         # There are no constraints left to fulfil; sudoku solved.
         yield list(solution)
     else:
-        col = min(matrix_A, key=lambda i: len(matrix_A[i]))
+        col = choose_col(matrix_A, constraints)
         for row in list(matrix_A[col]):
             solution.append(row)
             cols = select(matrix_A, constraints, row)
@@ -311,7 +311,45 @@ This is the recursive backtracking algorithm that attempts to find the solution 
 
 If `matrix_A` is empty, we have fulfilled all the constraints and thus solved the sudoku.
 
-Otherwise, find the column with the fewest values in `matrix_A`. This is the selected column. Append it to the partial solution.
+Otherwise, find the column with the fewest values in `matrix_A` using the algorithm below:
+
+```py
+def choose_col(matrix_A, constraints):
+    """
+    Returns col with fewest possible values.
+
+    @args
+        matrix_A: the search space matrix
+        constraints: The constraints matrix
+
+    @returns
+        col : the column with the fewest possible values
+    """
+
+    best_col_val = float("inf")
+    best_col = None
+
+    for col in matrix_A:
+        cur_col_val = len(matrix_A[col])
+        if best_col_val > cur_col_val:
+
+            best_col = col
+            best_col_val = cur_col_val
+
+            # Do not waste time if we have already found a column with only
+            # one value
+            if cur_col_val == 1:
+                break
+
+    return best_col
+```
+
+
+
+This returns the selected column. Append it to the partial solution.
+
+
+
 
 The associated rows and columns are then removed from the matrix:
 ```py
@@ -355,7 +393,6 @@ def deselect(matrix_A, constraints, row, cols) -> None:
                     matrix_A[k].add(j)
 ```
 
-
 <br />
 
 # <a name="observations"></a>My Observations
@@ -381,14 +418,47 @@ Why it is this specific solution, I am unsure. I have not found any explanation 
 
 <br />
 
-# <a name="drawbacks"></a>Drawbacks and limitations
-### <a name="changes_input_var"></a>The sudoku will update the values of the input variable instead of returning a copy
-In my testing, I found that it was significantly faster for the sudoku to simply apply the solutions to the initial_state array by changing its values, as it does not need to create a second NumPy array to store the answers in.
+# <a name="improvements"></a>Improvements I made to my solution
+### <a name="changes_input_var"></a>Custom min() function
 
-This has the drawback of updating the values of the input sudoku, so the initial state variable will be solved.
+My original method for finding the best possible column to choose used the built in min() function from python, with the line shown below.
+```py
+col = min(matrix_A, key=lambda i: len(matrix_A[i]))
+```
+This function was inefficient, as even when it had found a column with only one single branch, it would keep searching through the columns.
 
-I found that the benefits of this - i.e. the increase in speed - outweighed the drawbacks and so I chose to implement this.
+My solution was to write my own function, as shown below.
+```py
+def choose_col(matrix_A, constraints):
+    """
+    Returns col with fewest possible values.
 
+    @args
+        matrix_A: the search space matrix
+        constraints: The constraints matrix
+
+    @returns
+        col : the column with the fewest possible values
+    """
+
+    best_col_val = float("inf")
+    best_col = None
+
+    for col in matrix_A:
+        cur_col_val = len(matrix_A[col])
+        if best_col_val > cur_col_val:
+
+            best_col = col
+            best_col_val = cur_col_val
+
+            # Do not waste time if we have already found a column with only
+            # one value
+            if cur_col_val == 1:
+                break
+
+    return best_col
+```
+This reduced the average solve time of any given puzzle from about 2ms to about 1.7ms.
 
 <br />
 

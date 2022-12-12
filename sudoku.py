@@ -58,7 +58,7 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
         # There are no constraints left to fulfil; sudoku solved.
         yield list(solution)
     else:
-        col = min(matrix_A, key=lambda i: len(matrix_A[i]))
+        col = choose_col(matrix_A, constraints)
         for row in list(matrix_A[col]):
             solution.append(row)
             cols = select(matrix_A, constraints, row)
@@ -68,8 +68,39 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
 
             # This branch does not have a solution, deselect it
             deselect(matrix_A, constraints, row, cols)
+
+            # Remove value from this possible solution
             solution.pop()
 
+
+def choose_col(matrix_A, constraints):
+    """
+    Returns col with fewest possible values.
+
+    @args
+        matrix_A: the search space matrix
+        constraints: The constraints matrix
+
+    @returns
+        col : the column with the fewest possible values
+    """
+
+    best_col_val = float("inf")
+    best_col = None
+
+    for col in matrix_A:
+        cur_col_val = len(matrix_A[col])
+        if best_col_val > cur_col_val:
+
+            best_col = col
+            best_col_val = cur_col_val
+
+            # Do not waste time if we have already found a column with only
+            # one value
+            if cur_col_val == 1:
+                break
+
+    return best_col
 
 #   __  __       _
 #  |  \/  |     (_)
@@ -81,7 +112,7 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
 
 def sudoku_solver(sudoku) -> ndarray or None:
     '''
-    Solves the given sudoku using Donald Knuth's Dancing Links method.
+    Solves the given sudoku using Donald Knuth's Algorithm X.
 
     @args sudoku (ndarray) : the sudoku to solve
     @returns: solution
@@ -95,7 +126,7 @@ def sudoku_solver(sudoku) -> ndarray or None:
         [("box",  i) for i in product (range(9), range(1, 10))]
         )}
 
-    constraints = dict()
+    constraints = {}
     for row, col, cell in product(range(9), range(9), range(1, 10)):
         box = (row // 3) * 3 + (col // 3)
         # Boxes are labelled like this:
