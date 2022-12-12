@@ -56,7 +56,7 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
     '''
     if not matrix_A:
         # There are no constraints left to fulfil; sudoku solved.
-        yield list(solution)
+        yield solution
     else:
         col = choose_col(matrix_A, constraints)
         for row in list(matrix_A[col]):

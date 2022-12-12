@@ -6,12 +6,12 @@
 - [Test package](/test_scripts/README.md/#title)
 - [Exact Cover and my implementation](#exact_cover)
 - [My observations](#observations)
-- [improvements](#improvements)
+- [improvements and optimisations](#improvements)
 - [References](#references)
 
 
 # <a name="intro"></a>Intro
-This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my - relatively modern as of 2022 - laptop, can solve a "hard" sudoku in an average of 5 milliseconds and a "very easy" sudoku in an average of 2 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
+This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my i5-11400h processor, can solve a sudoku in an average of about 1.6 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
 
 # <a name="usage"></a>How to use the solver
 
@@ -418,7 +418,7 @@ Why it is this specific solution, I am unsure. I have not found any explanation 
 
 <br />
 
-# <a name="improvements"></a>Improvements I made to my solution
+# <a name="improvements"></a>Improvements and optimisations
 ### <a name="changes_input_var"></a>Custom min() function
 
 My original method for finding the best possible column to choose used the built in min() function from python, with the line shown below.
