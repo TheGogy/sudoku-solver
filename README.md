@@ -5,9 +5,10 @@
 - [Usage](#usage)
 - [Test package](/test_scripts/README.md/#title)
 - [Exact Cover](#exact_cover)
-- [My implementation](#my_implementation)
-- [My observations](#observations)
-- [improvements and optimisations](#improvements)
+- [My Implementation](#my_implementation)
+- [My Observations](#observations)
+- [Improvements and Optimisations](#improvements)
+- [More Sudokus](#more_sudokus)
 - [References](#references)
 
 
@@ -523,6 +524,16 @@ This reduced the solve time for an average sudoku from 1.7ms to 0.96ms.
 
 <br />
 
+# <a name="more_sudokus"></a>More Sudokus
+
+These are a few resources I used to test the solver.
+
+1 million sudoku games: https://www.kaggle.com/datasets/bryanpark/sudoku
+
+9 million sudoku games: https://www.kaggle.com/datasets/rohanrao/sudoku
+
+You can also find a weekly "Unsolvable" sudoku posted [here](https://www.sudokuwiki.org/Weekly_Sudoku.aspx?puz=28).
+
 # <a name="references"></a>References
 Knuth,D. 2000. Dancing Links. https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf [accessed Dec 2022]
 
@@ -538,6 +549,10 @@ Inkala, A. 2012. Arto Inkala's Monster sudoku: https://www.sudokuwiki.org/Arto_I
 
 Inkala, A. 2006. Escargot: https://www.sudokuwiki.org/Escargot
 
-Sudoku Wiki. (n.d.). Weekly Unsolvable puzzle: https://www.sudokuwiki.org/Weekly_Sudoku.asp?puz=28 [accessed Dec 2022]
-
 pyutils, 2022. line_profiler https://github.com/pyutils/line_profiler [accessed Dec 2022]
+
+Park, K. 2014. 1 million Sudoku games: https://www.kaggle.com/datasets/bryanpark/sudoku [accessed Dec 2022]
+
+Rohanrao, 2019. 9 million Sudoku Puzzles and Solutions: https://www.kaggle.com/datasets/rohanrao/sudoku [accessed Dec 2022]
+
+Sudoku Wiki. (n.d.). Weekly Unsolvable puzzle: https://www.sudokuwiki.org/Weekly_Sudoku.asp?puz=28 [accessed Dec 2022]
