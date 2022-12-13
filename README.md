@@ -532,8 +532,10 @@ Wikipedia, 2022. Exact cover. https://wikipedia.org/wiki/Exact_cover?lang=en [ac
 
 Wikipedia, 2022. Knuth's Algorithm X. https://wikiless.org/wiki/Knuth%27s_Algorithm_X?lang=en [accessed Dec 2022]
 
-Patrick Gillespie (Patorjk), Text to Ascii Art Generator (TAAG): https://patorjk.com/software/taag/#p=display&f=Big [accessed Dec 2022]
+Gillespie,P. (n.d). Text to Ascii Art Generator (TAAG): https://patorjk.com/software/taag/#p=display&f=Big [accessed Dec 2022]
 
-Unsolveable #28, the "hardest sudoku ever created", according to [Sudoku Wiki](https://www.sudokuwiki.org/Arto_Inkala_Sudoku) (found when looking for more sudokus like Arto Inkala's): https://www.sudokuwiki.org/Weekly_Sudoku.asp?puz=28 [accessed Dec 2022]
+Sudoku Wiki. (n.d.). Arto Inkala's Sudoku: https://www.sudokuwiki.org/Arto_Inkala_Sudoku [accessed Dec 2022]
+
+Sudoku Wiki. (n.d.). Unsolvable #28: https://www.sudokuwiki.org/Weekly_Sudoku.asp?puz=28 [accessed Dec 2022]
 
 pyutils, 2022. line_profiler https://github.com/pyutils/line_profiler [accessed Dec 2022]
