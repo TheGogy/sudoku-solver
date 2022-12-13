@@ -534,8 +534,10 @@ Wikipedia, 2022. Knuth's Algorithm X. https://wikiless.org/wiki/Knuth%27s_Algori
 
 Gillespie,P. (n.d). Text to Ascii Art Generator (TAAG): https://patorjk.com/software/taag/#p=display&f=Big [accessed Dec 2022]
 
-Sudoku Wiki. (n.d.). Arto Inkala's Sudoku: https://www.sudokuwiki.org/Arto_Inkala_Sudoku [accessed Dec 2022]
+Inkala, A. 2012. Arto Inkala's Monster sudoku: https://www.sudokuwiki.org/Arto_Inkala_Sudoku [accessed Dec 2022]
 
-Sudoku Wiki. (n.d.). Unsolvable #28: https://www.sudokuwiki.org/Weekly_Sudoku.asp?puz=28 [accessed Dec 2022]
+Inkala, A. 2006. Escargot: https://www.sudokuwiki.org/Escargot
+
+Sudoku Wiki. (n.d.). Weekly Unsolvable puzzle: https://www.sudokuwiki.org/Weekly_Sudoku.asp?puz=28 [accessed Dec 2022]
 
 pyutils, 2022. line_profiler https://github.com/pyutils/line_profiler [accessed Dec 2022]
