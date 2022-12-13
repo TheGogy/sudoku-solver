@@ -2,7 +2,7 @@
 This is a collection of scripts I have used to test the sudoku solver. As there were quite a few of them, I bundled them into a package to stop `test_sudoku.py` from getting too long.
 
 I have also included some test data that can be used with these scripts.
-These can be found in [`/data/`](#/../data).
+These can be found in [`/data/`](#../data).
 
 As well as the data provided by the University of Bath, I have also included a `/custom/` directory containing a few puzzles I have encountered that my solver has found particularly challenging.
 You can also find a weekly "Unsolvable" sudoku posted [here](#https://www.sudokuwiki.org/Weekly_Sudoku.aspx?puz=28).
