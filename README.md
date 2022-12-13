@@ -496,6 +496,10 @@ This reduced the average solve time of any given puzzle from about 2ms to about 
 As the constraints dict is not altered between sudokus, it can be cached so that it does not have to be calculated multiple times.
 This is done by making use of the memoize wrapper, shown below:
 ```py
+from functools import wraps
+
+...
+
 def memoize(func):
     '''
     Caches the result of a function for later use.
