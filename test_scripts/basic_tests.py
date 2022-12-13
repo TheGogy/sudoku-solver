@@ -1,6 +1,7 @@
 import numpy as np
 from time import process_time, perf_counter
 from sudoku import sudoku_solver
+import cProfile, pstats
 
 
 def basic_tests(use_process_time: bool) -> None:
@@ -16,9 +17,12 @@ def basic_tests(use_process_time: bool) -> None:
     total_time = 0
     total_correct = 0
     hardest_time = 0
+    difficulty_total_time_list = []
+    total_time_list = []
 
     script_start_time = perf_counter()
     for difficulty in difficulties:
+        difficulty_total_time = 0
         print(f"Testing {difficulty} sudokus")
 
         sudokus = np.load(f"data/{difficulty}_puzzle.npy")
@@ -47,9 +51,13 @@ def basic_tests(use_process_time: bool) -> None:
             # profiler.disable()
             # stats = pstats.Stats(profiler)
             # stats.print_stats()
+            # input()
 
             time_taken = end_time - start_time
             total_time += time_taken
+            difficulty_total_time += time_taken
+            total_time_tuple = (f'{difficulty} {i}', time_taken * 1000)
+            total_time_list.append(total_time_tuple)
 
             if time_taken > hardest_time:
                 hardest_time = time_taken
@@ -66,15 +74,32 @@ def basic_tests(use_process_time: bool) -> None:
                 count += 1
                 total_correct += 1
             else:
-                count +=1 
                 print("No, the correct solution is:")
                 print(solutions[i])
 
-            print("This sudoku took", time_taken, "seconds to solve.\n")
+            print("This sudoku took", str(time_taken * 1000), "ms to solve.\n")
+
 
         print(f"{count}/{len(sudokus)} {difficulty} sudokus correct")
         if count < len(sudokus):
             break
+
+        difficulty_total_time_tuple = (difficulty, difficulty_total_time * 1000)
+        difficulty_total_time_list.append(difficulty_total_time_tuple)
+
+    difficulty_total_time_list.sort(key=lambda x: x[1])
+    total_time_list.sort(key=lambda y: y[1])
+
+    tpd_printable = ''
+    for i in difficulty_total_time_list:
+        tpd_printable += '{:15s} - {:2.5f}\n'.format(i[0], round(i[1], 5))
+
+    tpd_printable += '\n- - - - - - - - -\n\n'
+
+    for i in total_time_list:
+        tpd_printable += '{:15s} - {:2.5f}\n'.format(i[0], round(i[1], 5))
+
+
     script_end_time = perf_counter()
 
     print(f'''
@@ -84,6 +109,8 @@ THIS IS "{hardest_number[0]}" SUDOKU NUMBER {hardest_number[1]}
 # - - - - - - - - - - [ solution ] - - - - - - - - - #
 {hardest_solution}
 TIME TAKEN               {hardest_time * 1000}ms
+# - - - - - - - - - - [ Times per difficulty ] - - - - - - - - - #
+{tpd_printable}
 # - - - - - - - - - - - - - - - - - - - - - - - - - #
 
     Solved {total_correct} sudokus in {round(script_end_time - script_start_time, 3)} seconds.

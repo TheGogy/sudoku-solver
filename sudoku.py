@@ -1,4 +1,5 @@
 from itertools import product
+from functools import wraps
 from numpy import (
     ndarray,
     add,
@@ -7,6 +8,32 @@ from numpy import (
     array,
     size
 )
+
+#   _____                           _
+#  |  __ \                         | |
+#  | |  | | ___  ___ ___  _ __ __ _| |_ ___  _ __ ___
+#  | |  | |/ _ \/ __/ _ \| '__/ _` | __/ _ \| '__/ __|
+#  | |__| |  __/ (_| (_) | | | (_| | || (_) | |  \__ \
+#  |_____/ \___|\___\___/|_|  \__,_|\__\___/|_|  |___/
+
+def memoize(func):
+    '''
+    Caches the result of a function for later use.
+
+    @args:
+        func: the function to cache
+
+    @returns:
+        wrapper: The wrapper to cache the output of the function
+    '''
+    cache = {}
+    @wraps(func)
+    def wrapper(*args):
+        key = str(args)
+        if key not in cache:
+            cache[key] = func(*args)
+        return cache[key]
+    return wrapper
 
 #                      _        __   __
 #                /\   | |       \ \ / /
@@ -17,12 +44,13 @@ from numpy import (
 #                         __/ |
 #                        |___/
 
-def select(matrix_A, constraints, row):
+
+def select(matrix_A, constraints, row) -> list:
     '''
     removes associated rows, cols from matrix
     @args:
         matrix_A: the search space matrix
-        constraints: the constraints matrix
+        constraints: the constraints dict
         row: The row to be selected
     '''
     cols = []
@@ -38,9 +66,9 @@ def deselect(matrix_A, constraints, row, cols) -> None:
     '''
     Restores a branch with a no solutions back into matrix_A
 
-    @args
+    @args:
         matrix_A: The search space matrix
-        constraints: the constraints matrix
+        constraints: the constraints dict
         row, cols: value to restore to matrix A
     '''
     for i in reversed(constraints[row]):
@@ -49,16 +77,18 @@ def deselect(matrix_A, constraints, row, cols) -> None:
             for k in constraints[j]:
                 matrix_A[k].add(j)
 
+
 def find_solution(matrix_A, constraints, solution=[]) -> list:
     '''
-    Recursively attempts to find a solution
+    Recursively attempts to find a solution to a given exact cover problem
 
-    @args
+    @args:
         matrix_A: The search space matrix
-        constraints: The constraints matrix
+        constraints: the constraints dict
         solution: The state to find (or not find) soltion for
 
-    @returns list: The solution
+    @returns:
+        list: The solution
     '''
     if not matrix_A:
         # There are no constraints left to fulfil; sudoku solved.
@@ -79,15 +109,15 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
             solution.pop()
 
 
-def choose_col(matrix_A, constraints):
+def choose_col(matrix_A, constraints) -> ((str, (int, int, int)), set()):
     """
     Returns col with fewest possible values.
 
-    @args
+    @args:
         matrix_A: the search space matrix
-        constraints: The constraints matrix
+        constraints: the constraints dict
 
-    @returns
+    @returns:
         col : the column with the fewest possible values
     """
 
@@ -95,16 +125,17 @@ def choose_col(matrix_A, constraints):
     best_col = None
 
     for col in matrix_A:
+        # Get heuristic of current column
         cur_col_val = len(matrix_A[col])
-        if best_col_val > cur_col_val:
 
+        # Do not waste time if we have already found a column with only
+        # one value. This must be the best column.
+        if cur_col_val == 1:
+            return col
+
+        if best_col_val > cur_col_val:
             best_col = col
             best_col_val = cur_col_val
-
-            # Do not waste time if we have already found a column with only
-            # one value
-            if cur_col_val == 1:
-                return best_col
 
     return best_col
 
@@ -115,23 +146,15 @@ def choose_col(matrix_A, constraints):
 #  | |  | | (_| | | | | |
 #  |_|  |_|\__,_|_|_| |_|
 
-
-def sudoku_solver(sudoku) -> ndarray or None:
+# Cache the constraints dict; this is not updated and can be re-used.
+@memoize
+def get_constraints() -> dict:
     '''
-    Solves the given sudoku using Donald Knuth's Algorithm X.
+    Gets the general constraint dict for all sudokus.
 
-    @args sudoku (ndarray) : the sudoku to solve
-    @returns: solution
-    @returns (generator obj) : Solved sudoku if sudoku has solution
+    @returns:
+        constraints (dict) : Constraints dictionary
     '''
-
-    matrix_A = {j: set() for j in(
-        [("cell", i) for i in product (range(9), range(9)    )] +
-        [("row",  i) for i in product (range(9), range(1, 10))] +
-        [("col",  i) for i in product (range(9), range(1, 10))] +
-        [("box",  i) for i in product (range(9), range(1, 10))]
-        )}
-
     constraints = {}
     for row, col, cell in product(range(9), range(9), range(1, 10)):
         box = (row // 3) * 3 + (col // 3)
@@ -149,6 +172,26 @@ def sudoku_solver(sudoku) -> ndarray or None:
             # Each box must have each value
             ("box",  (box, cell))
         ]
+    return constraints
+
+
+def sudoku_solver(sudoku) -> ndarray or None:
+    '''
+    Solves the given sudoku using Donald Knuth's Algorithm X.
+
+    @args sudoku (ndarray) : the sudoku to solve
+    @returns (generator obj) : Solved sudoku if sudoku has solution,
+                               else (9,9) numpy array with values -1
+    '''
+
+    matrix_A = {j: set() for j in(
+        [("cell", i) for i in product (range(9), range(9)    )] +
+        [("row",  i) for i in product (range(9), range(1, 10))] +
+        [("col",  i) for i in product (range(9), range(1, 10))] +
+        [("box",  i) for i in product (range(9), range(1, 10))]
+    )}
+
+    constraints = get_constraints()
 
     # Populate matrix A with constraints
     for i, consts in constraints.items():

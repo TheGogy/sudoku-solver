@@ -4,14 +4,15 @@
 - [Intro](#intro)
 - [Usage](#usage)
 - [Test package](/test_scripts/README.md/#title)
-- [Exact Cover and my implementation](#exact_cover)
+- [Exact Cover](#exact_cover)
+- [My implementation](#my_implementation)
 - [My observations](#observations)
 - [improvements and optimisations](#improvements)
 - [References](#references)
 
 
 # <a name="intro"></a>Intro
-This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my i5-11400h processor, can solve a sudoku in an average of about 1.6 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
+This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my i5-11400h processor, can solve a sudoku in an average of under a millisecond. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
 
 # <a name="usage"></a>How to use the solver
 
@@ -201,7 +202,9 @@ Therefore, as every value in `y` needs to be satisfied by *exactly one* value in
 
 **This can be represented as an exact cover problem where each column is a value in `x` and each row is a value in `y`.**
 
-## <a name="exact_cover_solve"></a>So what does that look like?
+# <a name="my_implementation"></a>My implementation
+
+## <a name="translating"></a>Translating sudoku to an exact cover problem
 
 The solver firstly constructs `matrix_A`. The code for this is as follows:
 ```py
@@ -213,7 +216,27 @@ matrix_A = (
         )
     matrix_A = {j: set() for j in matrix_A}
 
-    constraints = dict()
+    constraints = get_constraints()
+
+    # Populate matrix A with constraints
+    for i, consts in constraints.items():
+        for j in consts:
+            matrix_A[j].add(i)
+```
+
+`get_constraints()` is a function that returns the constraints dict and caches and returns the constraints dict.
+Shown below.
+```py
+# Cache the constraints dict; this is not updated and can be re-used.
+@memoize
+def get_constraints() -> dict:
+    '''
+    Gets the general constraint dict for all sudokus.
+
+    @returns:
+        constraints (dict) : Constraints dictionary
+    '''
+    constraints = {}
     for row, col, cell in product(range(9), range(9), range(1, 10)):
         box = (row // 3) * 3 + (col // 3)
         # Boxes are labelled like this:
@@ -230,11 +253,7 @@ matrix_A = (
             # Each box must have each value
             ("box",  (box, cell))
         ]
-
-    # Populate matrix A with constraints
-    for i, consts in constraints.items():
-        for j in consts:
-            matrix_A[j].add(i)
+    return constraints
 ```
 
 This creates a matrix as follows:
@@ -255,9 +274,10 @@ This creates a matrix as follows:
 | box  (...) contains value ... | ... | ... | ... |
 
 
-Once the initial matrix has been generated, we can update the constraints to reflect the initial state - to remove the rows and columns that we know are incorrect. If our original sudoku contains the value `(0,5,3)`, for example, then we can remove all columns that imply a different value at that location, such as `(0,5,2)`.
+Once the initial matrix has been generated, we can update the constraints to reflect the initial state - to remove the rows and columns that we know are incorrect. If our original sudoku contains the value `(0,5,3)` for example, then we can remove all columns that imply a different value at that location, such as `(0,5,2)`.
+If the value of any given cell does not exist, the sudoku is not solvable.
 
-This is completed using:
+This is completed with the code below:
 ```py
     # Update constraints to reflect initial state
     for (row, col), cell in ndenumerate(sudoku):
@@ -269,16 +289,11 @@ This is completed using:
                 return full((9, 9), fill_value=-1)
 ```
 
-If the solver is given a sudoku with conflicting values, this will be caught with the `except KeyError` statement.
+We can then proceed onto <u> **Algorithm X** </u>.
 
-We can then proceed onto **Algorithm X**.
-```py
-# find solution and update initial state with it
-for solution in find_solution(matrix_A, constraints, []):
-    for (row, col, val) in solution:
-        sudoku[row][col] = val
-    return sudoku
-```
+## <a name="Algorithm X"></a>Algorithm X
+
+
 ```py
 def find_solution(matrix_A, constraints, solution=[]) -> list:
     '''
@@ -286,7 +301,7 @@ def find_solution(matrix_A, constraints, solution=[]) -> list:
 
     @args
         matrix_A: The search space matrix
-        constraints: The constraints matrix
+        constraints: The constraints dict
         solution: The state to find (or not find) soltion for
 
     @returns list: The solution
@@ -320,7 +335,7 @@ def choose_col(matrix_A, constraints):
 
     @args
         matrix_A: the search space matrix
-        constraints: The constraints matrix
+        constraints: The constraints dict
 
     @returns
         col : the column with the fewest possible values
@@ -344,12 +359,7 @@ def choose_col(matrix_A, constraints):
     return best_col
 ```
 
-
-
 This returns the selected column. Append it to the partial solution.
-
-
-
 
 The associated rows and columns are then removed from the matrix:
 ```py
@@ -358,7 +368,7 @@ def select(matrix_A, constraints, row):
     removes associated rows, cols from matrix
     @args:
         matrix_A: the search space matrix
-        constraints: the constraints matrix
+        constraints: the constraints dict
         row: The row to be selected
     '''
     cols = []
@@ -382,7 +392,7 @@ def deselect(matrix_A, constraints, row, cols) -> None:
 
     @args
         matrix_A: The search space matrix
-        constraints: the constraints matrix
+        constraints: the constraints dict
         row, cols: value to restore to matrix A
     '''
     for i in reversed(constraints[row]):
@@ -393,13 +403,31 @@ def deselect(matrix_A, constraints, row, cols) -> None:
                     matrix_A[k].add(j)
 ```
 
+## <a name="translating_back"></a>Translating the solved exact cover problem back to a sudoku
+
+When `find_solution` has found and returned a solution, it will be in the form of a list of tuples containing the remaining values to put back into the sudoku.
+The solver then fills those values into the original sudoku, avoiding making a copy in order to save processing time.
+
+```py
+# find solution and update initial state with it
+for solution in find_solution(matrix_A, constraints, []):
+    for (row, col, val) in solution:
+        sudoku[row][col] = val
+    return sudoku
+```
+
+If `find_solution` has exhausted all possible branches, then there is no possible solution and hence the solver will return the error grid:
+```py
+return full((9, 9), fill_value=-1)
+```
+
 <br />
 
 # <a name="observations"></a>My Observations
 
 While running some tests on the solver, I noticed some rather weird behaviour, which I will do my best to document here.
 
-### <a name="observations_1_blank_sudoku"></a>When given a blank sudoku, the solver always returns the same value.
+## <a name="observations_1_blank_sudoku"></a>When given a blank sudoku, the solver always returns the same value.
 
 When the sudoku solver is given an array of zeros, it will consistently return the same solution, as it is the first solution it reaches.
 Why it is this specific solution, I am unsure. I have not found any explanation online, although I think it would be interesting to see if other implementations of algorithm X reach the same solution when given an empty initial state.
@@ -419,25 +447,25 @@ Why it is this specific solution, I am unsure. I have not found any explanation 
 <br />
 
 # <a name="improvements"></a>Improvements and optimisations
-### <a name="changes_input_var"></a>Custom min() function
+### <a name="custom_min"></a>Custom min() function
 
 My original method for finding the best possible column to choose used the built in min() function from python, with the line shown below.
 ```py
 col = min(matrix_A, key=lambda i: len(matrix_A[i]))
 ```
-This function was inefficient, as even when it had found a column with only one single branch, it would keep searching through the columns.
+This function was inefficient, as even when it had found a column with only one single branch, it would keep iterating through the columns to find a lower value, although the value cannot be lower than 1.
 
 My solution was to write my own function, as shown below.
 ```py
-def choose_col(matrix_A, constraints):
+def choose_col(matrix_A, constraints) -> ((str, (int, int, int)), set()):
     """
     Returns col with fewest possible values.
 
-    @args
+    @args:
         matrix_A: the search space matrix
-        constraints: The constraints matrix
+        constraints: the constraints dict
 
-    @returns
+    @returns:
         col : the column with the fewest possible values
     """
 
@@ -445,20 +473,49 @@ def choose_col(matrix_A, constraints):
     best_col = None
 
     for col in matrix_A:
+        # Get heuristic of current column
         cur_col_val = len(matrix_A[col])
-        if best_col_val > cur_col_val:
 
+        # Do not waste time if we have already found a column with only
+        # one value. This must be the best column.
+        if cur_col_val == 1:
+            return col
+
+        if best_col_val > cur_col_val:
             best_col = col
             best_col_val = cur_col_val
-
-            # Do not waste time if we have already found a column with only
-            # one value
-            if cur_col_val == 1:
-                break
 
     return best_col
 ```
 This reduced the average solve time of any given puzzle from about 2ms to about 1.7ms.
+
+<br />
+
+### <a name="cache_constraints"></a>Caching the constraints dict
+
+As the constraints dict is not altered between sudokus, it can be cached so that it does not have to be calculated multiple times.
+This is done by making use of the memoize wrapper, shown below:
+```py
+def memoize(func):
+    '''
+    Caches the result of a function for later use.
+
+    @args:
+        func: the function to cache
+
+    @returns:
+        wrapper: The wrapper to cache the output of the function
+    '''
+    cache = {}
+    @wraps(func)
+    def wrapper(*args):
+        key = str(args)
+        if key not in cache:
+            cache[key] = func(*args)
+        return cache[key]
+    return wrapper
+```
+This reduced the solve time for an average sudoku from 1.7ms to 0.96ms.
 
 <br />
 
