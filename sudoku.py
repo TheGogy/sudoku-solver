@@ -78,7 +78,7 @@ def deselect(matrix_A, constraints, row, cols) -> None:
                 matrix_A[k].add(j)
 
 
-def find_solution(matrix_A, constraints, solution=[]) -> list:
+def find_solution(matrix_A, constraints, solution) -> list:
     '''
     Recursively attempts to find a solution to a given exact cover problem
 
