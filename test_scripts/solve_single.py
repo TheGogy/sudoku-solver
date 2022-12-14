@@ -1,6 +1,7 @@
 import numpy as np
 from time import process_time, perf_counter
-from sudoku import sudoku_solver
+from test_scripts.utils import print_sudoku
+from test_scripts.tests import test_sudoku
 
 def solve_single(sudoku: np.ndarray,
                  save_to_file : str or None,
@@ -15,23 +16,12 @@ def solve_single(sudoku: np.ndarray,
 
     '''
     print(" - - - - - - - - [ Input Sudoku ] - - - - - - - - ")
-    print(sudoku)
+    print_sudoku(sudoku)
 
-    # - - - - - - - - - - - - - - - - - - - #
-    # This code is written like this because if it was cleaner it has an impact on performance
-    if use_process_time:
-        start_time = process_time()
-        sudoku_solver(sudoku)
-        end_time = process_time()
-    else:
-        start_time = perf_counter()
-        sudoku_solver(sudoku)
-        end_time = perf_counter()
-    # - - - - - - - - - - - - - - - - - - - #
-    time_taken = (end_time - start_time) * 1000
+    your_solution, time_taken =test_sudoku(sudoku, use_process_time)
 
     print(" - - - - - - - - [ Solved sudoku ] - - - - - - - - ")
-    print(sudoku)
+    print_sudoku(your_solution)
 
     print(f"""
 # - - - - - - - - - - - - - - - - - - - - - - - #

@@ -1,6 +1,6 @@
 import numpy as np
 from time import process_time, perf_counter
-from sudoku import sudoku_solver
+from test_scripts.tests import test_sudoku
 
 def solve_multiple(sudoku_array: np.ndarray,
                    save_to_file: str or None,
@@ -31,18 +31,9 @@ def solve_multiple(sudoku_array: np.ndarray,
             print(f"SOLVING SUDOKU    {count}/{total_count}", end="\r")
             count += 1
             if count == quit_after: break
-            # - - - - - - - - - - - - - - - - - - - #
-            # This code is written like this because if it was cleaner it has an impact on performance
-            if use_process_time:
-                start_time = process_time()
-                solution = sudoku_solver(sudoku)
-                end_time = process_time()
-            else:
-                start_time = perf_counter()
-                solution = sudoku_solver(sudoku)
-                end_time = perf_counter()
-            # - - - - - - - - - - - - - - - - - - - #
-            time_taken = (end_time - start_time) * 1000
+
+            your_solution, time_taken = test_sudoku(sudoku, use_process_time)
+
             total_time += time_taken
             if time_taken < fastest:
                 fastest = time_taken

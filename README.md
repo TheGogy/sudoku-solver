@@ -434,15 +434,19 @@ When the sudoku solver is given an array of zeros, it will consistently return t
 Why it is this specific solution, I am unsure. I have not found any explanation online, although I think it would be interesting to see if other implementations of algorithm X reach the same solution when given an empty initial state.
 
 ```
-[[4. 7. 1. 3. 8. 6. 5. 9. 2.]
- [9. 3. 2. 5. 4. 7. 6. 1. 8.]
- [8. 5. 6. 2. 1. 9. 7. 4. 3.]
- [2. 9. 3. 1. 6. 8. 4. 5. 7.]
- [6. 8. 7. 9. 5. 4. 3. 2. 1.]
- [1. 4. 5. 7. 3. 2. 8. 6. 9.]
- [7. 6. 9. 8. 2. 5. 1. 3. 4.]
- [3. 2. 4. 6. 7. 1. 9. 8. 5.]
- [5. 1. 8. 4. 9. 3. 2. 7. 6.]]
++-------+-------+-------+
+| 4 7 1 | 3 8 6 | 5 9 2 |
+| 9 3 2 | 5 4 7 | 6 1 8 |
+| 8 5 6 | 2 1 9 | 7 4 3 |
++-------+-------+-------+
+| 2 9 3 | 1 6 8 | 4 5 7 |
+| 6 8 7 | 9 5 4 | 3 2 1 |
+| 1 4 5 | 7 3 2 | 8 6 9 |
++-------+-------+-------+
+| 7 6 9 | 8 2 5 | 1 3 4 |
+| 3 2 4 | 6 7 1 | 9 8 5 |
+| 5 1 8 | 4 9 3 | 2 7 6 |
++-------+-------+-------+
 ```
 
 <br />

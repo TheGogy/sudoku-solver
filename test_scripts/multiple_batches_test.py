@@ -1,6 +1,7 @@
 import numpy as np
 from time import process_time, perf_counter
-from sudoku import sudoku_solver
+from test_scripts.utils import print_sudoku
+from test_scripts.tests import test_sudoku
 
 def multiple_batches(num_of_batches: int, use_process_time: bool) -> None:
     '''
@@ -29,23 +30,9 @@ def multiple_batches(num_of_batches: int, use_process_time: bool) -> None:
                 sudokus = np.load(f"data/{difficulty}_puzzle.npy")
                 for i in range(len(sudokus)):
                     sudoku = sudokus[i].copy()
-                    # - - - - - - - - - - - - - - - - - - - #
-                    # This code is written like this because if
-                    # it was cleaner it seems to have an impact on performance
-                    if use_process_time:
-                        start_time = process_time()
-                        sudoku_solver(sudoku)
-                        end_time = process_time()
-                    else:
-                        start_time = perf_counter()
-                        sudoku_solver(sudoku)
-                        end_time = perf_counter()
-                    # - - - - - - - - - - - - - - - - - - - #
 
-                    # The code below is a little ugly.
-                    # It keeps track of the fastest and slowest
-                    # individual solves and batch solves.
-                    time_taken = (end_time - start_time) * 1000
+                    your_solution, time_taken = test_sudoku(sudoku, use_process_time)
+
                     batch_time += time_taken
 
                     if time_taken < fastest_time_from_batch:

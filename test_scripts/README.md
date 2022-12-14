@@ -6,6 +6,9 @@ These can be found in [`/data/`](../data).
 
 As well as the data provided by the University of Bath, I have also included a [`/custom/`](../data/custom) directory containing a few puzzles I have encountered that my solver has found particularly challenging. If you want more sudokus, please see [here](../README.md#more-sudokus).
 
+> **Note**
+> When printing a the output of an unsolvable sudoku, the functions outlined here will use 'x' instead of -1. The solver will still output a 9x9 array of -1, as per the spec, but this increases the readability of the output in the terminal.
+
 ## <a name="links"></a>Links
 - [basic_tests](#basic_tests)
 - [load_array](#load_array)
