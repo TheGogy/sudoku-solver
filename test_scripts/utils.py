@@ -13,13 +13,25 @@ def print_sudoku(sudoku: ndarray) -> str:
     sep = '\n+-------+-------+-------+'
 
     print(sep)
+    # Iterate through rows
     for row_num, row in enumerate(sudoku):
         print("|", end=" ")
+
+        # Iterate through cols
         for col_num, cell in enumerate(row):
+
+            # Make sure each value is easier to read
             item = str(cell).replace('-1', 'x').replace('0', ' ')
+
             print(item, end=" ")
+
             if (col_num + 1) % 3 == 0:
+                # reached edge of box
                 print("|", end=" ")
+
+        # Print separator after finished printing all cols
         if (row_num + 1) % 3 == 0:
             print(sep, end=" ")
+
+        # go to new line
         print()

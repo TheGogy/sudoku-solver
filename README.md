@@ -259,7 +259,7 @@ def get_constraints() -> dict:
 
 This creates a matrix as follows:
 
-|     | (0,0,1) | (0,0,2) | (0,0,3) | (0,0,4) |
+|     | (0,0,1) | (0,0,2) | (0,0,3) |
 |:---:|:---:|:---:|:---:|:---:|
 | cell (0,0) contains value     | 1 | 0 | 0 |
 | cell (0,1) contains value     | 1 | 0 | 0 |
@@ -539,7 +539,7 @@ These are a few resources I used to test the solver.
 You can also find a weekly "Unsolvable" sudoku posted [here](https://www.sudokuwiki.org/Weekly_Sudoku.aspx?puz=28).
 
 # <a name="references"></a>References
-Knuth,D. 2000. Dancing Links. https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf [accessed Dec 2022]
+Knuth, D. 2000. Dancing Links. https://www.ocf.berkeley.edu/~jchu/publicportal/sudoku/0011047.pdf [accessed Dec 2022]
 
 Wikipedia, 2022. Dancing Links. https://wikipedia.org/wiki/Dancing_Links?lang=en [accessed Dec 2022]
 
@@ -547,7 +547,7 @@ Wikipedia, 2022. Exact cover. https://wikipedia.org/wiki/Exact_cover?lang=en [ac
 
 Wikipedia, 2022. Knuth's Algorithm X. https://wikiless.org/wiki/Knuth%27s_Algorithm_X?lang=en [accessed Dec 2022]
 
-Gillespie,P. (n.d). Text to Ascii Art Generator (TAAG): https://patorjk.com/software/taag/#p=display&f=Big [accessed Dec 2022]
+Gillespie, P. (n.d). Text to Ascii Art Generator (TAAG): https://patorjk.com/software/taag/#p=display&f=Big [accessed Dec 2022]
 
 Inkala, A. 2012. Arto Inkala's Monster sudoku: https://www.sudokuwiki.org/Arto_Inkala_Sudoku [accessed Dec 2022]
 
@@ -560,3 +560,5 @@ Park, K. 2014. 1 million Sudoku games: https://www.kaggle.com/datasets/bryanpark
 Rohanrao, 2019. 9 million Sudoku Puzzles and Solutions: https://www.kaggle.com/datasets/rohanrao/sudoku [accessed Dec 2022]
 
 Sudoku Wiki. (n.d.). Weekly Unsolvable puzzle: https://www.sudokuwiki.org/Weekly_Sudoku.asp?puz=28 [accessed Dec 2022]
+
+Blender, 2013. How to import all modules in dir: https://stackoverflow.com/questions/16852811/python-how-to-import-from-all-modules-in-dir [accessed Dec 2022]

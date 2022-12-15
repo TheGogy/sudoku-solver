@@ -9,6 +9,9 @@ def basic_tests(use_process_time: bool) -> None:
     Basic test function (provided by University of Bath).
     Tests against each set of puzzles stored in /data/
     and compares answers against the solutions (also stored in /data/).
+
+    @args:
+        use_process_time (bool) : Whether or not to use time.process_time() instead of time.perf_counter()
     '''
 
     difficulties = ['very_easy', 'easy', 'medium', 'hard']
@@ -75,7 +78,7 @@ def basic_tests(use_process_time: bool) -> None:
 
     tpd_printable = ''
     for i in difficulty_total_time_list:
-        tpd_printable += '{:15s} - {:2.5f}\n'.format(i[0], round(i[1], 5))
+        tpd_printable += '{:15s} - {:2.5f}  (avg: {:2.5f})\n'.format(i[0], round(i[1], 5), round(i[1] / 15, 5))
 
     tpd_printable += '\n- - - - - - - - -\n\n'
 

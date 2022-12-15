@@ -1,3 +1,7 @@
+'''
+From Blender (first answer) https://stackoverflow.com/questions/16852811/python-how-to-import-from-all-modules-in-dir
+'''
+
 __all__ = []
 
 import pkgutil

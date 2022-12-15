@@ -1,13 +1,24 @@
 import numpy as np
-from test_scripts.utils import print_sudoku
-from test_scripts.tests import test_sudoku
+from test_scripts.solve_single import solve_single
 
 def all_zeros_test(use_process_time: bool) -> None:
+    '''
+    Tests the sudoku solver against a sudoku with no elements.
+    @args:
+        use_process_time (bool) : Whether or not to use time.process_time() instead of time.perf_counter()
+    '''
     sudoku = np.full((9, 9), fill_value=0)
-    solve_test(sudoku, use_process_time)
+    solve_single(sudoku, False, use_process_time)
 
 
 def already_solved_test(use_process_time: bool) -> None:
+    '''
+    Tests the sudoku solver against a sudoku that has already been solved.
+
+    @args:
+        use_process_time (bool) : Whether or not to use time.process_time() instead of time.perf_counter()
+    '''
+
     sudoku = np.array([
         [5, 8, 2,    6, 4, 3,    9, 1, 7,],
         [3, 1, 9,    8, 7, 5,    4, 6, 2,],
@@ -21,26 +32,5 @@ def already_solved_test(use_process_time: bool) -> None:
         [2, 5, 1,    4, 6, 9,    7, 3, 8,],
         [9, 4, 8,    3, 1, 7,    2, 5, 6,]
     ])
-    solve_test(sudoku, use_process_time)
-
-
-def solve_test(sudoku: np.ndarray, use_process_time: bool) -> None:
-
-    print(" - - - - - - - - [ Input Sudoku ] - - - - - - - - ")
-    print_sudoku(sudoku)
-
-    your_solution, time_taken = test_sudoku(sudoku, use_process_time)
-
-    print(" - - - - - - - - [ Solved sudoku ] - - - - - - - - ")
-    print_sudoku(your_solution)
-
-    print(f"""
-# - - - - - - - - - - - - - - - - - - - - - - - #
-
-    TOTAL TIME                {time_taken} ms
-
-    Calculated using time.{"process_time" if use_process_time else "perf_counter"}()
-
-# - - - - - - - - - - - - - - - - - - - - - - - #
-          """)
+    solve_single(sudoku, False, use_process_time)
 
