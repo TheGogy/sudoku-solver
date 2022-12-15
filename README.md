@@ -259,20 +259,20 @@ def get_constraints() -> dict:
 
 This creates a matrix as follows:
 
-|     | (0,0,1) | (0,0,2) | (0,0,3) |
-|:---:|:---:|:---:|:---:|
-| cell (0,0) contains value     | 1 | 0 | 0 |
-| cell (0,1) contains value     | 1 | 0 | 0 |
-| cell (...) contains value     | ... | ... | ... |
-| row  (0)   contains value 1   | 1 | 0 | 0 |
-| row  (0)   contains value 2   | 0 | 1 | 0 |
-| row  (...) contains value ... | ... | ... | ... |
-| col  (0)   contains value 1   | 1 | 0 | 0 |
-| col  (0)   contains value 2   | 0 | 1 | 0 |
-| col  (...) contains value ... | ... | ... | ... |
-| box  (0)   contains value 1   | 1 | 0 | 0 |
-| box  (0)   contains value 2   | 0 | 1 | 0 |
-| box  (...) contains value ... | ... | ... | ... |
+|     | (0,0,1) | (0,0,2) | (0,0,3) | ... |
+|:---:|:---:|:---:|:---:|:---:|
+| cell (0,0) contains value     | 1 | 0 | 0 | ... |
+| cell (0,1) contains value     | 0 | 0 | 0 | ... |
+| cell (...) contains value     | ... | ... | ... | ... |
+| row  (0)   contains value 1   | 1 | 0 | 0 | ... |
+| row  (0)   contains value 2   | 0 | 1 | 0 | ... |
+| row  (...) contains value ... | ... | ... | ... | ... |
+| col  (0)   contains value 1   | 1 | 0 | 0 | ... |
+| col  (0)   contains value 2   | 0 | 1 | 0 | ... |
+| col  (...) contains value ... | ... | ... | ... | ... |
+| box  (0)   contains value 1   | 1 | 0 | 0 | ... |
+| box  (0)   contains value 2   | 0 | 1 | 0 | ... |
+| box  (...) contains value ... | ... | ... | ... | ... |
 
 
 Once the initial matrix has been generated, we can update the constraints to reflect the initial state - to remove the rows and columns that we know are incorrect. If our original sudoku contains the value `(0,5,3)` for example, then we can remove all columns that imply a different value at that location, such as `(0,5,2)`.
