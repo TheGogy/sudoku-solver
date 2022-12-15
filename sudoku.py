@@ -1,5 +1,4 @@
 from itertools import product
-from functools import wraps
 from numpy import (
     ndarray,
     add,
@@ -26,13 +25,16 @@ def memoize(func):
     @returns:
         wrapper: The wrapper to cache the output of the function
     '''
+    # Cache dictionary
     cache = {}
-    @wraps(func)
+
     def wrapper(*args):
-        key = str(args)
-        if key not in cache:
-            cache[key] = func(*args)
-        return cache[key]
+        # If values are not cached, add to cache
+        if args not in cache:
+            cache[args] = func(*args)
+
+        # Return cached values
+        return cache[args]
     return wrapper
 
 #                      _        __   __
@@ -52,14 +54,28 @@ def select(matrix_A, constraints, row) -> list:
         matrix_A: the search space matrix
         constraints: the constraints dict
         row: The row to be selected
+
+    @returns:
+        cols (list): List of removed columns
     '''
+    # Keep removed columns so they can be added back into sudoku
     cols = []
+
+    # For each constraint this row satisfies:
     for i in constraints[row]:
+
+        # For all other constraints that also satisfy i:
         for j in matrix_A[i]:
+
+            # For all other constraints that j satisfies:
             for k in constraints[j]:
+
+                # Remove all other constraints except i
                 if k != i:
                     matrix_A[k].remove(j)
+
         cols.append(matrix_A.pop(i))
+
     return cols
 
 def deselect(matrix_A, constraints, row, cols) -> None:
@@ -69,12 +85,20 @@ def deselect(matrix_A, constraints, row, cols) -> None:
     @args:
         matrix_A: The search space matrix
         constraints: the constraints dict
-        row, cols: value to restore to matrix A
+        cols: Columns to restore into matrix_A
     '''
     for i in reversed(constraints[row]):
+
+        # Get top column from list of removed columns
         matrix_A[i] = cols.pop()
+
+        # For each other value that satisfies constraint:
         for j in matrix_A[i]:
+
+            # For other constraints that value satisfies:
             for k in constraints[j]:
+
+                # Add value back into matrix_A
                 matrix_A[k].add(j)
 
 
@@ -109,15 +133,15 @@ def find_solution(matrix_A, constraints, solution) -> list:
             solution.pop()
 
 
-def choose_col(matrix_A, constraints) -> ((str, (int, int, int)), set()):
+def choose_col(matrix_A, constraints):
     """
     Returns col with fewest possible values.
 
-    @args:
+    @args
         matrix_A: the search space matrix
-        constraints: the constraints dict
+        constraints: The constraints dict
 
-    @returns:
+    @returns
         col : the column with the fewest possible values
     """
 
@@ -125,17 +149,17 @@ def choose_col(matrix_A, constraints) -> ((str, (int, int, int)), set()):
     best_col = None
 
     for col in matrix_A:
-        # Get heuristic of current column
         cur_col_val = len(matrix_A[col])
 
-        # Do not waste time if we have already found a column with only
-        # one value. This must be the best column.
-        if cur_col_val == 1:
-            return col
-
         if best_col_val > cur_col_val:
+
             best_col = col
             best_col_val = cur_col_val
+
+            # Do not waste time if we have already found a column with only
+            # one value
+            if cur_col_val == 1:
+                return best_col
 
     return best_col
 
@@ -210,6 +234,7 @@ def sudoku_solver(sudoku) -> ndarray or None:
     # find solution and update initial state with it
     for solution in find_solution(matrix_A, constraints, []):
         for (row, col, val) in solution:
+            # Fill original values directly into input sudoku to save time
             sudoku[row][col] = val
         return sudoku
 

@@ -347,6 +347,7 @@ def choose_col(matrix_A, constraints):
 
     for col in matrix_A:
         cur_col_val = len(matrix_A[col])
+
         if best_col_val > cur_col_val:
 
             best_col = col
@@ -355,7 +356,7 @@ def choose_col(matrix_A, constraints):
             # Do not waste time if we have already found a column with only
             # one value
             if cur_col_val == 1:
-                break
+                return best_col
 
     return best_col
 ```
@@ -364,21 +365,35 @@ This returns the selected column. Append it to the partial solution.
 
 The associated rows and columns are then removed from the matrix:
 ```py
-def select(matrix_A, constraints, row):
+def select(matrix_A, constraints, row) -> list:
     '''
     removes associated rows, cols from matrix
     @args:
         matrix_A: the search space matrix
         constraints: the constraints dict
         row: The row to be selected
+
+    @returns:
+        cols (list): List of removed columns
     '''
+    # Keep removed columns so they can be added back into sudoku
     cols = []
+
+    # For each constraint this row satisfies:
     for i in constraints[row]:
+
+        # For all other constraints that also satisfy i:
         for j in matrix_A[i]:
+
+            # For all other constraints that j satisfies:
             for k in constraints[j]:
+
+                # Remove all other constraints except i
                 if k != i:
                     matrix_A[k].remove(j)
+
         cols.append(matrix_A.pop(i))
+
     return cols
 ```
 
@@ -391,17 +406,24 @@ def deselect(matrix_A, constraints, row, cols) -> None:
     '''
     Restores a branch with a no solutions back into matrix_A
 
-    @args
+    @args:
         matrix_A: The search space matrix
         constraints: the constraints dict
-        row, cols: value to restore to matrix A
+        cols: Columns to restore into matrix_A
     '''
     for i in reversed(constraints[row]):
+
+        # Get top column from list of removed columns
         matrix_A[i] = cols.pop()
+
+        # For each other value that satisfies constraint:
         for j in matrix_A[i]:
+
+            # For other constraints that value satisfies:
             for k in constraints[j]:
-                if k != i:
-                    matrix_A[k].add(j)
+
+                # Add value back into matrix_A
+                matrix_A[k].add(j)
 ```
 
 ## <a name="translating_back"></a>Translating the solved exact cover problem back to a sudoku
@@ -410,11 +432,12 @@ When `find_solution` has found and returned a solution, it will be in the form o
 The solver then fills those values into the original sudoku, avoiding making a copy in order to save processing time.
 
 ```py
-# find solution and update initial state with it
-for solution in find_solution(matrix_A, constraints, []):
-    for (row, col, val) in solution:
-        sudoku[row][col] = val
-    return sudoku
+    # find solution and update initial state with it
+    for solution in find_solution(matrix_A, constraints, []):
+        for (row, col, val) in solution:
+            # Fill original values directly into input sudoku to save time
+            sudoku[row][col] = val
+        return sudoku
 ```
 
 If `find_solution` has exhausted all possible branches, then there is no possible solution and hence the solver will return the error grid:
@@ -501,10 +524,6 @@ This reduced the average solve time of any given puzzle from about 2ms to about 
 As the constraints dict is not altered between sudokus, it can be cached so that it does not have to be calculated multiple times.
 This is done by making use of the memoize wrapper, shown below:
 ```py
-from functools import wraps
-
-...
-
 def memoize(func):
     '''
     Caches the result of a function for later use.
@@ -515,22 +534,25 @@ def memoize(func):
     @returns:
         wrapper: The wrapper to cache the output of the function
     '''
+    # Cache dictionary
     cache = {}
-    @wraps(func)
+
     def wrapper(*args):
-        key = str(args)
-        if key not in cache:
-            cache[key] = func(*args)
-        return cache[key]
+        # If values are not cached, add to cache
+        if args not in cache:
+            cache[args] = func(*args)
+
+        # Return cached values
+        return cache[args]
     return wrapper
 ```
-This reduced the solve time for an average sudoku from 1.7ms to 0.96ms.
+This reduced the solve time for an average sudoku from 1.7ms to 0.75ms.
 
 <br />
 
 # <a name="more_sudokus"></a>More Sudokus
 
-These are a few resources I used to test the solver.
+These are a few resources I used to test the solver. I used the 1 million sudoku dataset in order to get an average solve time.
 
 1 million sudoku games: https://www.kaggle.com/datasets/bryanpark/sudoku
 
