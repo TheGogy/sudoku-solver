@@ -87,10 +87,12 @@ def basic_tests(use_process_time: bool) -> None:
 
     print(f'''
 # - - - - - - - - [ Hardest Sudoku ] - - - - - - - - #
-THIS IS "{hardest_number[0]}" SUDOKU NUMBER {hardest_number[1]}
-{print_sudoku(hardest_sudoku)}
-# - - - - - - - - - - [ solution ] - - - - - - - - - #
-{print_sudoku(hardest_solution)}
+THIS IS "{hardest_number[0]}" SUDOKU NUMBER {hardest_number[1]}''')
+    print_sudoku(hardest_sudoku)
+    print(f'''
+# - - - - - - - - - - [ solution ] - - - - - - - - - #''')
+    print_sudoku(hardest_solution)
+    print(f'''
 TIME TAKEN               {hardest_time}ms
 # - - - - - - - - - - [ Times per difficulty ] - - - - - - - - - #
 {tpd_printable}
