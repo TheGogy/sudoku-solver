@@ -1,11 +1,8 @@
 from itertools import product
 from numpy import (
     ndarray,
-    add,
     ndenumerate,
     full,
-    array,
-    size
 )
 
 #   _____                           _
