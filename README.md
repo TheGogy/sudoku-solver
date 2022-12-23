@@ -209,13 +209,12 @@ Therefore, as every value in `y` needs to be satisfied by *exactly one* value in
 
 The solver firstly constructs `matrix_A`. The code for this is as follows:
 ```py
-matrix_A = (
+    matrix_A = {j: set() for j in(
         [("cell", i) for i in product (range(9), range(9)    )] +
         [("row",  i) for i in product (range(9), range(1, 10))] +
         [("col",  i) for i in product (range(9), range(1, 10))] +
         [("box",  i) for i in product (range(9), range(1, 10))]
-        )
-    matrix_A = {j: set() for j in matrix_A}
+    )}
 
     constraints = get_constraints()
 
