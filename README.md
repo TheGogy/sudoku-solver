@@ -484,15 +484,15 @@ This function was inefficient, as even when it had found a column with only one 
 
 My solution was to write my own function, as shown below.
 ```py
-def choose_col(matrix_A, constraints) -> ((str, (int, int, int)), set()):
+def choose_col(matrix_A, constraints):
     """
     Returns col with fewest possible values.
 
-    @args:
+    @args
         matrix_A: the search space matrix
-        constraints: the constraints dict
+        constraints: The constraints dict
 
-    @returns:
+    @returns
         col : the column with the fewest possible values
     """
 
@@ -500,17 +500,17 @@ def choose_col(matrix_A, constraints) -> ((str, (int, int, int)), set()):
     best_col = None
 
     for col in matrix_A:
-        # Get heuristic of current column
         cur_col_val = len(matrix_A[col])
 
-        # Do not waste time if we have already found a column with only
-        # one value. This must be the best column.
-        if cur_col_val == 1:
-            return col
-
         if best_col_val > cur_col_val:
+
             best_col = col
             best_col_val = cur_col_val
+
+            # Do not waste time if we have already found a column with only
+            # one value
+            if cur_col_val == 1:
+                return best_col
 
     return best_col
 ```
