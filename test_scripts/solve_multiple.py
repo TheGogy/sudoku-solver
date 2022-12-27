@@ -41,6 +41,8 @@ def solve_multiple(sudoku_array: np.ndarray,
 
                 if save_to_file:
                     solutions = np.append(solutions, solution)
+
+                count += 1
                 bar()
 
     except KeyboardInterrupt:
@@ -49,14 +51,14 @@ def solve_multiple(sudoku_array: np.ndarray,
     print( f'''
 # - - - - - - - - - - - - - - - - - - - - - - - #
 
-    Solved {total_count} sudokus in {round(script_end_time - script_start_time, 3)} seconds.
+    Solved {count} sudokus in {round(script_end_time - script_start_time, 3)} seconds.
 
     TOTAL TIME                {total_time / 1000} s
-    SUDOKUS SOLVED            {total_count}
+    SUDOKUS SOLVED            {count}
 
     FASTEST TIME              {fastest} ms
     SLOWEST TIME              {slowest} ms
-    AVERAGE TIME              {total_time / total_count} ms
+    AVERAGE TIME              {total_time / count} ms
 
     Calculated using time.{"process_time" if use_process_time else "perf_counter"}()
 
