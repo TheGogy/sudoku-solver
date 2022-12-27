@@ -471,6 +471,25 @@ Why it is this specific solution, I am unsure. I have not found any explanation 
 +-------+-------+-------+
 ```
 
+I believe that it has something to do with how the compiler treats data stored in lists and dictionaries, as when the code is run using [pypy3](#https://www.pypy.org/), it produces a different result when given the same test:
+
+```
++-------+-------+-------+
+| 1 2 3 | 4 5 6 | 7 8 9 |
+| 7 8 9 | 1 2 3 | 4 5 6 |
+| 4 5 6 | 7 8 9 | 1 2 3 |
++-------+-------+-------+
+| 3 1 2 | 8 4 5 | 9 6 7 |
+| 6 9 7 | 3 1 2 | 8 4 5 |
+| 8 4 5 | 6 9 7 | 3 1 2 |
++-------+-------+-------+
+| 2 3 1 | 5 7 4 | 6 9 8 |
+| 9 6 8 | 2 3 1 | 5 7 4 |
+| 5 7 4 | 9 6 8 | 2 3 1 |
++-------+-------+-------+
+```
+
+
 <br />
 
 # <a name="improvements"></a>Improvements and optimisations
