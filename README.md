@@ -10,7 +10,7 @@
 - [More Sudokus](#more_sudokus)
 - [References](#references)
 
-- - - - - - - - - - -
+- - -
 - [Test package](/test_scripts/README.md/#title)
 
 # <a name="intro"></a>Intro
@@ -19,7 +19,7 @@ This is my solution to the problem proposed by CW1 of the AI module. It is an ag
 # <a name="usage"></a>How to use the solver
 
 ## <a name="usage_solver"></a>Solver - `sudoku.py`
-To use the solver, pass a `numpy.ndarray((9x9)<sudoku>)` to `sudoku.py`. The test script included (`test_sudoku.py`) contains examples of how to do this and examples of input are stored in numpy arrays in `/data`.
+To use the solver, pass a `numpy.ndarray((9x9)<sudoku>)` to [`sudoku.py`](#sudoku.py). The test script included ([`test_sudoku.py`](#test_sudoku.py)) contains examples of how to do this and examples of input are stored in numpy arrays in [`/data/`](#/data/).
 
 ```py
 import numpy as np
@@ -33,8 +33,8 @@ solution = sudoku_solver(initial_state)
 
 The solver will return the solved sudoku in the form  `numpy.ndarray((9x9)<solution)`. If the sudoku has multiple possible solutions, the solver will return the first one it finds.
 
-## <a name="usage_test_script"></a>Test script - `test_sudoku.py`
-I have included a test script `test_sudoku.py`, that implements the test package `/test_scripts/` (see below) with the sudoku solver.
+## <a name="usage_test_script"></a>Test script - [`test_sudoku.py`](#test_sudoku.py)
+I have included a test script [`test_sudoku.py`](#test_sudoku.py), that implements the test package [`test_scripts.py`](#/test_scripts/) (see below) with the sudoku solver.
 
  Usage is as follows:
  ```
@@ -94,7 +94,7 @@ The exact cover of `X` would be `S* = {B, D, F}` as:
 
 ## <a name="exact_cover_solve"></a>Algorithm X - how to solve exact cover problems
 
-In order to use algorithm X, we must first create a matrix A consisting of 0s and 1s, with a goal of selecting a subset of the rows such that the digit 1 appears in each column exactly once.
+In order to use Algorithm X, we must first create a matrix A consisting of 0s and 1s, with a goal of selecting a subset of the rows such that the digit 1 appears in each column exactly once.
 
 Algorithm X takes an element e in `A` to cover, and finds a row r that covers it. This row is added to the potential solution, and every row that also covers e is removed from `A` along with every column that r satisfies. It then repeats this process recursively.
 
@@ -147,7 +147,7 @@ Row A has 1s in columns 1, 4 and 7. (This is the first `for` loop)
 | A   | **1** | 0 | 0 | **1** | 0 | 0 |**1** |
 
 Column 1 has 1s in rows A, B. Column 4 has rows in A, B, C and column 7 has 1s in rows A, C, E and F.
-Therefore the only row that does *not* have a 1 in the same column as row A is row D. (this is the second `for` loop.)
+Therefore the only row that does *not* have a 1 in the same column as row A is row D (this is the second `for` loop.).
 
 |     | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:---:|---|---|---|---|---|---|---|
@@ -397,7 +397,7 @@ def select(matrix_A, constraints, row) -> list:
     return cols
 ```
 
-And the program recursivly tries again.
+And the program recursively tries again.
 
 If the program has exhausted all the possible solutions on a given branch, it will then deselect it and return the removed values back into matrix A:
 
@@ -454,7 +454,7 @@ While running some tests on the solver, I noticed some rather weird behaviour, w
 ## <a name="observations_1_blank_sudoku"></a>When given a blank sudoku, the solver always returns the same value.
 
 When the sudoku solver is given an array of zeros, it will consistently return the same solution, as it is the first solution it reaches.
-Why it is this specific solution, I am unsure. I have not found any explanation online, although I think it would be interesting to see if other implementations of algorithm X reach the same solution when given an empty initial state.
+Why it is this specific solution, I am unsure. I have not found any explanation online, although I think it would be interesting to see if other implementations of Algorithm X reach the same solution when given an empty initial state.
 
 ```
 +-------+-------+-------+
@@ -617,7 +617,7 @@ Gillespie, P. (n.d). Text to Ascii Art Generator (TAAG): https://patorjk.com/sof
 
 Inkala, A. 2012. Arto Inkala's Monster sudoku: https://www.sudokuwiki.org/Arto_Inkala_Sudoku [accessed Dec 2022]
 
-Inkala, A. 2006. Escargot: https://www.sudokuwiki.org/Escargot
+Inkala, A. 2006. Escargot: https://www.sudokuwiki.org/Escargot [accessed Dec 2022]
 
 pyutils, 2022. line_profiler https://github.com/pyutils/line_profiler [accessed Dec 2022]
 
