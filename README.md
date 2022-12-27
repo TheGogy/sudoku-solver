@@ -547,6 +547,31 @@ def memoize(func):
 ```
 This reduced the solve time for an average sudoku from 1.7ms to 0.75ms.
 
+### <a name="compare_pointers"></a>Comparing pointers instead of hashes for dictionary
+
+For matrix_A, as there are many key values looked up, it is faster to compare the pointers to the values instead of the hashes of the values themselves.
+
+This can be done with the builtin `sys.intern` function, as shown below:
+
+```py
+ matrix_A = {j: set() for j in(
+        [intern(("cell {}".format(i))) for i in product (range(9), range(9)    )]
+        ...
+ )}
+```
+and:
+
+```py
+constraints[(row, col, cell)] = [
+            # Each cell must have a value
+            ("cell ({}, {})".format(row, col)),
+            ...
+]
+```
+
+This reduced the average solve time from 0.75ms to 0.7ms.
+
+
 <br />
 
 # <a name="more_sudokus"></a>More Sudokus
