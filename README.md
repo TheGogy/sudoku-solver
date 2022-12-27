@@ -3,7 +3,6 @@
 ## <a name="links"></a>Links
 - [Intro](#intro)
 - [Usage](#usage)
-- [Test package](/test_scripts/README.md/#title)
 - [Exact Cover](#exact_cover)
 - [My Implementation](#my_implementation)
 - [My Observations](#observations)
@@ -11,6 +10,8 @@
 - [More Sudokus](#more_sudokus)
 - [References](#references)
 
+- - - - - - - - - - -
+- [Test package](/test_scripts/README.md/#title)
 
 # <a name="intro"></a>Intro
 This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my i5-11400h processor, can solve a sudoku in an average of 0.75 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
