@@ -1,4 +1,5 @@
 from itertools import product
+from sys import intern
 from numpy import (
     ndarray,
     ndenumerate,
@@ -111,9 +112,7 @@ def find_solution(matrix_A, constraints, solution) -> list:
     @returns:
         list: The solution
     '''
-    if not matrix_A:
-        # There are no constraints left to fulfil; sudoku solved.
-        yield solution
+    if not matrix_A: yield solution
     else:
         col = choose_col(matrix_A, constraints)
         for row in list(matrix_A[col]):
@@ -185,13 +184,13 @@ def get_constraints() -> dict:
         #   6 7 8
         constraints[(row, col, cell)] = [
             # Each cell must have a value
-            ("cell", (row, col)),
+            ("cell ({}, {})".format(row, col)),
             # Each row must have each value
-            ("row",  (row, cell)),
+            ("row ({}, {})".format(row, cell)),
             # Each column must have each value
-            ("col",  (col, cell)),
+            ("col ({}, {})".format(col, cell)),
             # Each box must have each value
-            ("box",  (box, cell))
+            ("box ({}, {})".format(box, cell))
         ]
     return constraints
 
@@ -206,10 +205,10 @@ def sudoku_solver(sudoku) -> ndarray or None:
     '''
 
     matrix_A = {j: set() for j in(
-        [("cell", i) for i in product (range(9), range(9)    )] +
-        [("row",  i) for i in product (range(9), range(1, 10))] +
-        [("col",  i) for i in product (range(9), range(1, 10))] +
-        [("box",  i) for i in product (range(9), range(1, 10))]
+        [intern(("cell {}".format(i))) for i in product (range(9), range(9)    )] +
+        [intern(("row {}".format(i))) for i in product (range(9), range(1, 10))] +
+        [intern(("col {}".format(i))) for i in product (range(9), range(1, 10))] +
+        [intern(("box {}".format(i))) for i in product (range(9), range(1, 10))]
     )}
 
     constraints = get_constraints()
