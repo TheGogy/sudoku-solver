@@ -1,5 +1,7 @@
 import numpy as np
-from test_scripts.solve_single import solve_single
+from test_scripts.tests import test_sudoku
+from test_scripts.utils import print_sudoku
+from copy import deepcopy
 
 def all_zeros_test(use_process_time: bool) -> None:
     '''
@@ -32,5 +34,25 @@ def already_solved_test(use_process_time: bool) -> None:
         [2, 5, 1,    4, 6, 9,    7, 3, 8,],
         [9, 4, 8,    3, 1, 7,    2, 5, 6,]
     ])
-    solve_single(sudoku, False, use_process_time)
+    sudoku_copy = deepcopy(sudoku)
 
+    solution, time_taken = test_sudoku(sudoku, use_process_time)
+
+    print(" - - - - - - - - [ Input Sudoku ] - - - - - - - - ")
+    print_sudoku(sudoku_copy)
+
+    print(" - - - - - - - - [ Solved sudoku ] - - - - - - - - ")
+    print_sudoku(your_solution)
+
+    print(f"""
+# - - - - - - - - - - - - - - - - - - - - - - - #
+
+    TOTAL TIME                {time_taken} ms
+
+    Calculated using time.{"process_time" if use_process_time else "perf_counter"}()
+
+# - - - - - - - - - - - - - - - - - - - - - - - #
+# """)
+
+    passed = u'\033[32m \u2713' if np.array_equal(sudoku_copy, solution) else u'\033[31m \u2717'
+    print(f"Test passed: {passed}")

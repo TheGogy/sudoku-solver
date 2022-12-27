@@ -46,7 +46,7 @@ test_scripts.all_zeros_test(use_process_time=...)
 ```
 
 ## <a name="already_solved_test"></a>[**already_solved_test**](/test_scripts/edge_case_tests.py)
-Tests the solver by giving it a solved sudoku. The solver should output the
+Tests the solver by giving it a solved sudoku. The solver should return the sudoku as it is.
 
 It takes the argument `use_process_time`. If this is `True`, `time.process_time()` will be used to measure how long the sudoku solver takes. Otherwise it will use `time.perf_counter`.
 
@@ -54,7 +54,7 @@ Usage:
 ```py
 import test_scripts
 
-test_scripts.all_zeros_test(use_process_time=...)
+test_scripts.already_solved_test(use_process_time=...)
 ```
 
 ## <a name="load_array"></a>[**load_array**](/test_scripts/load_array.py)
