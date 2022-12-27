@@ -27,6 +27,7 @@ def solve_multiple(sudoku_array: np.ndarray,
     solutions = np.ndarray
     script_start_time = perf_counter()
     array_to_solve = sudoku_array if quit_after == -1 else sudoku_array[:quit_after]
+    count = 0
     try:
         with alive_bar(total_count) as bar:
             for sudoku in array_to_solve:
