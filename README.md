@@ -19,7 +19,7 @@ This is my solution to the problem proposed by CW1 of the AI module. It is an ag
 # <a name="usage"></a>How to use the solver
 
 ## <a name="usage_solver"></a>Solver - `sudoku.py`
-To use the solver, pass a `numpy.ndarray((9x9)<sudoku>)` to [`sudoku.py`](#sudoku.py). The test script included ([`test_sudoku.py`](#test_sudoku.py)) contains examples of how to do this and examples of input are stored in numpy arrays in [`/data/`](#/data/).
+To use the solver, pass a `numpy.ndarray((9x9)<sudoku>)` to [`sudoku.py`](/sudoku.py). The test script included ([`test_sudoku.py`](/test_sudoku.py)) contains examples of how to do this and examples of input are stored in numpy arrays in [`/data/`](/data/).
 
 ```py
 import numpy as np
@@ -33,8 +33,8 @@ solution = sudoku_solver(initial_state)
 
 The solver will return the solved sudoku in the form  `numpy.ndarray((9x9)<solution)`. If the sudoku has multiple possible solutions, the solver will return the first one it finds.
 
-## <a name="usage_test_script"></a>Test script - [`test_sudoku.py`](#test_sudoku.py)
-I have included a test script [`test_sudoku.py`](#test_sudoku.py), that implements the test package [`test_scripts.py`](#/test_scripts/) (see below) with the sudoku solver.
+## <a name="usage_test_script"></a>Test script - [`test_sudoku.py`](/test_sudoku.py)
+I have included a test script [`test_sudoku.py`](/test_sudoku.py), that implements the test package [`test_scripts.py`](/test_scripts/) (see below) with the sudoku solver.
 
  Usage is as follows:
  ```
