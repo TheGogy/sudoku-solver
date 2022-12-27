@@ -110,19 +110,3 @@ test_scripts.solve_multiple(sudoku_array=...,
                             use_process_time=...,
                             quit_after=...)
 ```
-
-## <a name="solve_single"></a>[**solve_single**](/test_scripts/solve_single.py)
-Solves a single sudoku and prints the results.
-
-It takes 3 arguments:
-- `sudoku` - the sudoku to solve
-- `save_to_file` - whether or not to save results to a file. If you are not interested in the sudoku solutions and only want to know the processing time, then set this to `False`.  Setting it to `True` will make the function return an array of the solutions, but it will significantly increase processing time.
-- `use_process_time` - If this is `True`, `time.process_time()` will be used to measure how long the sudoku solver takes. Otherwise it will use `time.perf_counter`.
-
-Usage:
-```py
-import test_scripts
-
-test_scripts.solve_multiple(sudoku_array=...,
-                            save_to_file_=...,
-                            use_process_time=...)
