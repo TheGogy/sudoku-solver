@@ -56,7 +56,7 @@ def solve_multiple(sudoku_array: np.ndarray,
 
     FASTEST TIME              {fastest} ms
     SLOWEST TIME              {slowest} ms
-    AVERAGE TIME              {total_time / count} ms
+    AVERAGE TIME              {total_time / total_count} ms
 
     Calculated using time.{"process_time" if use_process_time else "perf_counter"}()
 
