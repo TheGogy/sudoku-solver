@@ -89,14 +89,14 @@ def main(argv) -> None:
 
         elif opt in ("-f", "--file"):
             if arg.endswith(".txt"):
-                solve_single(load_txt_file(arg), output_file, use_process_time)
+                test_sudoku_verbose(load_txt_file(arg), output_file, use_process_time)
                 sys.exit(0)
 
             elif arg.endswith(".npy") or arg.endswith(".csv"):
                 sudoku_array = load_array(filename=arg)
                 dimensions = sudoku_array.ndim
                 if dimensions == 2:
-                    solve_single(
+                    test_sudoku_verbose(
                         sudoku=sudoku_array,
                         output_file=output_file,
                         use_process_time=use_process_time)

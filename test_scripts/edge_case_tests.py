@@ -10,7 +10,25 @@ def all_zeros_test(use_process_time: bool) -> None:
         use_process_time (bool) : Whether or not to use time.process_time() instead of time.perf_counter()
     '''
     sudoku = np.full((9, 9), fill_value=0)
-    solve_single(sudoku, False, use_process_time)
+    sudoku_copy = deepcopy(sudoku)
+
+    solution, time_taken = test_sudoku(sudoku, use_process_time)
+
+    print(" - - - - - - - - [ Input Sudoku ] - - - - - - - - ")
+    print_sudoku(sudoku_copy)
+
+    print(" - - - - - - - - [ Solved sudoku ] - - - - - - - - ")
+    print_sudoku(solution)
+
+    print(f"""
+# - - - - - - - - - - - - - - - - - - - - - - - #
+
+    TOTAL TIME                {time_taken} ms
+
+    Calculated using time.{"process_time" if use_process_time else "perf_counter"}()
+
+# - - - - - - - - - - - - - - - - - - - - - - - #
+""")
 
 
 def already_solved_test(use_process_time: bool) -> None:
@@ -42,7 +60,7 @@ def already_solved_test(use_process_time: bool) -> None:
     print_sudoku(sudoku_copy)
 
     print(" - - - - - - - - [ Solved sudoku ] - - - - - - - - ")
-    print_sudoku(your_solution)
+    print_sudoku(solution)
 
     print(f"""
 # - - - - - - - - - - - - - - - - - - - - - - - #
@@ -52,7 +70,7 @@ def already_solved_test(use_process_time: bool) -> None:
     Calculated using time.{"process_time" if use_process_time else "perf_counter"}()
 
 # - - - - - - - - - - - - - - - - - - - - - - - #
-# """)
+""")
 
     passed = u'\033[32m \u2713' if np.array_equal(sudoku_copy, solution) else u'\033[31m \u2717'
     print(f"Test passed: {passed}")

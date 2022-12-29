@@ -1,7 +1,9 @@
 import numpy as np
 from alive_progress import alive_bar
 from time import process_time, perf_counter
+
 from test_scripts.tests import test_sudoku
+from test_scripts.utils import save_sudoku
 
 def solve_multiple(sudoku_array: np.ndarray,
                    save_to_file: str or None,
@@ -66,6 +68,4 @@ def solve_multiple(sudoku_array: np.ndarray,
 # - - - - - - - - - - - - - - - - - - - - - - - #
             ''')
     if save_to_file:
-        save_file_name = f"{save_to_file}_solutions.npy"
-        np.save(save_file_name, solutions)
-        print(f"Saved to file: {save_file_name}")
+        save_sudoku(solutions, save_to_file)

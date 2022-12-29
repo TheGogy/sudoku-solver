@@ -1,8 +1,11 @@
-from numpy import ndarray
+from numpy import (
+    ndarray,
+    save
+)
 
 def print_sudoku(sudoku: ndarray) -> str:
     '''
-    Displays a sudoku in a more easily way.
+    Displays a sudoku in an easy to read format.
 
     @args:
         sudoku (ndarray) : The sudoku to print
@@ -35,3 +38,19 @@ def print_sudoku(sudoku: ndarray) -> str:
 
         # go to new line
         print()
+
+
+def save_sudoku(sudoku: ndarray, filename: str):
+    '''
+    Saves a sudoku or array of sudokus to a file.
+
+    @args:
+        sudoku (ndarray): The sudoku (or array of sudokus) to save
+    '''
+    try:
+        save_file_name = f"{filename}_solutions.npy"
+        np.save(save_file_name, solutions)
+        print(f"Saved to file: {save_file_name}")
+
+    except FileExistsError:
+        print(f"Could not save: file {save_file_name} already exists.")

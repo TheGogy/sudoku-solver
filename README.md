@@ -211,10 +211,10 @@ Therefore, as every value in `y` needs to be satisfied by *exactly one* value in
 The solver firstly constructs `matrix_A`. The code for this is as follows:
 ```py
     matrix_A = {j: set() for j in(
-        [("cell", i) for i in product (range(9), range(9)    )] +
-        [("row",  i) for i in product (range(9), range(1, 10))] +
-        [("col",  i) for i in product (range(9), range(1, 10))] +
-        [("box",  i) for i in product (range(9), range(1, 10))]
+        [intern((f"cell {i}")) for i in product (range(9), range(9)    )] +
+        [intern((f"row {i}" )) for i in product (range(9), range(1, 10))] +
+        [intern((f"col {i}" )) for i in product (range(9), range(1, 10))] +
+        [intern((f"box {i}" )) for i in product (range(9), range(1, 10))]
     )}
 
     constraints = get_constraints()
@@ -246,13 +246,13 @@ def get_constraints() -> dict:
         #   6 7 8
         constraints[(row, col, cell)] = [
             # Each cell must have a value
-            ("cell", (row, col)),
+            intern((f"cell ({row}, {col})")),
             # Each row must have each value
-            ("row",  (row, cell)),
+            intern((f"row ({row}, {cell})")),
             # Each column must have each value
-            ("col",  (col, cell)),
+            intern((f"col ({col}, {cell})")),
             # Each box must have each value
-            ("box",  (box, cell))
+            intern((f"box ({box}, {cell})"))
         ]
     return constraints
 ```
@@ -575,7 +575,7 @@ This can be done with the builtin `sys.intern` function, as shown below:
 
 ```py
  matrix_A = {j: set() for j in(
-        [intern(("cell {}".format(i))) for i in product (range(9), range(9)    )]
+        [intern((f"cell {i}")) for i in product (range(9), range(9)    )]
         ...
  )}
 ```
@@ -584,8 +584,7 @@ and:
 ```py
 constraints[(row, col, cell)] = [
             # Each cell must have a value
-            ("cell ({}, {})".format(row, col)),
-            ...
+            intern((f"cell ({row}, {col})")),
 ]
 ```
 
