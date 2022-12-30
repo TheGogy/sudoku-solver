@@ -208,9 +208,9 @@ Therefore, as every value in `y` needs to be satisfied by *exactly one* value in
 
 ## <a name="translating"></a>Translating sudoku to an exact cover problem
 
-The solver firstly constructs `matrix_A`. The code for this is as follows:
+The solver firstly constructs `matrix_a`. The code for this is as follows:
 ```py
-    matrix_A = {j: set() for j in(
+    matrix_a = {j: set() for j in(
         [intern((f"cell {i}")) for i in product (range(9), range(9)    )] +
         [intern((f"row {i}" )) for i in product (range(9), range(1, 10))] +
         [intern((f"col {i}" )) for i in product (range(9), range(1, 10))] +
@@ -220,9 +220,10 @@ The solver firstly constructs `matrix_A`. The code for this is as follows:
     constraints = get_constraints()
 
     # Populate matrix A with constraints
+    # Populate matrix A with constraints
     for i, consts in constraints.items():
         for j in consts:
-            matrix_A[j].add(i)
+            matrix_a[j].add(i)
 ```
 
 `get_constraints()` is a function that returns the constraints dict and caches and returns the constraints dict.
@@ -284,7 +285,7 @@ This is completed with the code below:
     for (row, col), cell in ndenumerate(sudoku):
         if cell != 0:
             try:
-                select(matrix_A, constraints, (row, col, cell))
+                select(matrix_a, constraints, (row, col, cell))
             except KeyError:
                 # Sudoku is not solvable
                 return full((9, 9), fill_value=-1)
@@ -296,46 +297,46 @@ We can then proceed onto <u> **Algorithm X** </u>.
 
 
 ```py
-def find_solution(matrix_A, constraints, solution=[]) -> list:
+def find_solution(matrix_a, constraints, solution=[]) -> list:
     '''
     Recursively attempts to find a solution
 
     @args
-        matrix_A: The search space matrix
+        matrix_a: The search space matrix
         constraints: The constraints dict
         solution: The state to find (or not find) soltion for
 
     @returns list: The solution
     '''
-    if not matrix_A:
+    if not matrix_a:
         # There are no constraints left to fulfil; sudoku solved.
         yield list(solution)
     else:
-        col = choose_col(matrix_A, constraints)
-        for row in list(matrix_A[col]):
+        col = choose_col(matrix_a, constraints)
+        for row in list(matrix_a[col]):
             solution.append(row)
-            cols = select(matrix_A, constraints, row)
+            cols = select(matrix_a, constraints, row)
 
             # Keep trying to find solution recursively
-            for i in find_solution(matrix_A, constraints, solution): yield i
+            for i in find_solution(matrix_a, constraints, solution): yield i
 
             # This row does not have a solution, deselect it
-            deselect(matrix_A, constraints, row, cols)
+            deselect(matrix_a, constraints, row, cols)
             solution.pop()
 ```
 This is the recursive backtracking algorithm that attempts to find the solution to the given sudoku.
 
-If `matrix_A` is empty, we have fulfilled all the constraints and thus solved the sudoku.
+If `matrix_a` is empty, we have fulfilled all the constraints and thus solved the sudoku.
 
-Otherwise, find the column with the fewest values in `matrix_A` using the algorithm below:
+Otherwise, find the column with the fewest values in `matrix_a` using the algorithm below:
 
 ```py
-def choose_col(matrix_A, constraints):
+def choose_col(matrix_a, constraints):
     """
     Returns col with fewest possible values.
 
     @args
-        matrix_A: the search space matrix
+        matrix_a: the search space matrix
         constraints: The constraints dict
 
     @returns
@@ -345,8 +346,8 @@ def choose_col(matrix_A, constraints):
     best_col_val = float("inf")
     best_col = None
 
-    for col in matrix_A:
-        cur_col_val = len(matrix_A[col])
+    for col in matrix_a:
+        cur_col_val = len(matrix_a[col])
 
         if best_col_val > cur_col_val:
 
@@ -365,11 +366,11 @@ This returns the selected column. Append it to the partial solution.
 
 The associated rows and columns are then removed from the matrix:
 ```py
-def select(matrix_A, constraints, row) -> list:
+def select(matrix_a, constraints, row) -> list:
     '''
     removes associated rows, cols from matrix
     @args:
-        matrix_A: the search space matrix
+        matrix_a: the search space matrix
         constraints: the constraints dict
         row: The row to be selected
 
@@ -383,16 +384,16 @@ def select(matrix_A, constraints, row) -> list:
     for i in constraints[row]:
 
         # For all other constraints that also satisfy i:
-        for j in matrix_A[i]:
+        for j in matrix_a[i]:
 
             # For all other constraints that j satisfies:
             for k in constraints[j]:
 
                 # Remove all other constraints except i
                 if k != i:
-                    matrix_A[k].remove(j)
+                    matrix_a[k].remove(j)
 
-        cols.append(matrix_A.pop(i))
+        cols.append(matrix_a.pop(i))
 
     return cols
 ```
@@ -402,28 +403,28 @@ And the program recursively tries again.
 If the program has exhausted all the possible solutions on a given branch, it will then deselect it and return the removed values back into matrix A:
 
 ```py
-def deselect(matrix_A, constraints, row, cols) -> None:
+def deselect(matrix_a, constraints, row, cols) -> None:
     '''
-    Restores a branch with a no solutions back into matrix_A
+    Restores a branch with a no solutions back into matrix_a
 
     @args:
-        matrix_A: The search space matrix
+        matrix_a: The search space matrix
         constraints: the constraints dict
-        cols: Columns to restore into matrix_A
+        cols: Columns to restore into matrix_a
     '''
     for i in reversed(constraints[row]):
 
         # Get top column from list of removed columns
-        matrix_A[i] = cols.pop()
+        matrix_a[i] = cols.pop()
 
         # For each other value that satisfies constraint:
-        for j in matrix_A[i]:
+        for j in matrix_a[i]:
 
             # For other constraints that value satisfies:
             for k in constraints[j]:
 
-                # Add value back into matrix_A
-                matrix_A[k].add(j)
+                # Add value back into matrix_a
+                matrix_a[k].add(j)
 ```
 
 ## <a name="translating_back"></a>Translating the solved exact cover problem back to a sudoku
@@ -433,7 +434,7 @@ The solver then fills those values into the original sudoku, avoiding making a c
 
 ```py
     # find solution and update initial state with it
-    for solution in find_solution(matrix_A, constraints, []):
+    for solution in find_solution(matrix_a, constraints, []):
         for (row, col, val) in solution:
             # Fill original values directly into input sudoku to save time
             sudoku[row][col] = val
@@ -498,18 +499,18 @@ I believe that it has something to do with how the compiler treats data stored i
 
 My original method for finding the best possible column to choose used the built in min() function from python, with the line shown below.
 ```py
-col = min(matrix_A, key=lambda i: len(matrix_A[i]))
+col = min(matrix_a, key=lambda i: len(matrix_a[i]))
 ```
 This function was inefficient, as even when it had found a column with only one single branch, it would keep iterating through the columns to find a lower value, although the value cannot be lower than 1.
 
 My solution was to write my own function, as shown below.
 ```py
-def choose_col(matrix_A, constraints):
+def choose_col(matrix_a, constraints):
     """
     Returns col with fewest possible values.
 
     @args
-        matrix_A: the search space matrix
+        matrix_a: the search space matrix
         constraints: The constraints dict
 
     @returns
@@ -519,8 +520,8 @@ def choose_col(matrix_A, constraints):
     best_col_val = float("inf")
     best_col = None
 
-    for col in matrix_A:
-        cur_col_val = len(matrix_A[col])
+    for col in matrix_a:
+        cur_col_val = len(matrix_a[col])
 
         if best_col_val > cur_col_val:
 
@@ -569,12 +570,12 @@ This reduced the solve time for an average sudoku from 1.7ms to 0.75ms.
 
 ### <a name="compare_pointers"></a>Comparing pointers instead of hashes for dictionary
 
-For matrix_A, as there are many key values looked up, it is faster to compare the pointers to the values instead of the hashes of the values themselves.
+For matrix_a, as there are many key values looked up, it is faster to compare the pointers to the values instead of the hashes of the values themselves.
 
 This can be done with the builtin `sys.intern` function, as shown below:
 
 ```py
- matrix_A = {j: set() for j in(
+ matrix_a = {j: set() for j in(
         [intern((f"cell {i}")) for i in product (range(9), range(9)    )]
         ...
  )}
