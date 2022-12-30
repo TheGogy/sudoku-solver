@@ -24,7 +24,7 @@ def print_sudoku(sudoku: ndarray) -> str:
         for col_num, cell in enumerate(row):
 
             # Make sure each value is easier to read
-            item = str(cell).replace('-1', 'x').replace('0', ' ')
+            item = str(int(cell)).replace('-1', 'x').replace('0', ' ')
 
             print(item, end=" ")
 
