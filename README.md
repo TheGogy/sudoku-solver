@@ -17,7 +17,7 @@
 This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my i5-11400h processor, can solve a sudoku in an average of under half a millisecond for the test data included. I have chosen to use two separate solvers: A simple backtracking algorithm for easy sudokus, and a more complicated algorithm for harder sudokus: Algorithm X.
 
 > **Note**
-> Although my approach uses two separate solvers, my main focus is on Algorithm X, which will be discussed in detail below. A short explanation of my backtracking solver, as well as how I have implemented it, can be found [here](#hybrid_alg/).
+> Although my approach uses two separate solvers, my main focus is on Algorithm X, which will be discussed in detail below. A short explanation of my backtracking solver, as well as how I have implemented it, can be found [here](#hybrid_alg).
 
 # <a name="usage"></a>How to use the solver
 
