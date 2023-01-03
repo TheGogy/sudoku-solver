@@ -340,6 +340,7 @@ def sudoku_solver(initial_state) -> ndarray((9,9)):
     '''
 
     # Decide which algorithm to use
+    # 39 is the optimal point between the solvers
     if count_nonzero(initial_state) > 39:
 
         # Optimised for easier sudokus
@@ -347,7 +348,7 @@ def sudoku_solver(initial_state) -> ndarray((9,9)):
         if solvable:
             return check_solved(sol)
         else:
-            return full((9,9), -1)
+            return full((9, 9), -1)
 
     # Optimised for harder sudokus
     return solve_alg_x(initial_state)
