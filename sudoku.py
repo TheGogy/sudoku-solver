@@ -1,9 +1,17 @@
+from collections.abc import Generator
 from itertools import product
 from sys import intern
+from functools import reduce
 from numpy import (
+    count_nonzero,
     ndarray,
     ndenumerate,
     full,
+    arange,
+    where,
+    setdiff1d,
+    union1d,
+    copy as npcopy
 )
 
 #   _____                           _
@@ -12,6 +20,7 @@ from numpy import (
 #  | |  | |/ _ \/ __/ _ \| '__/ _` | __/ _ \| '__/ __|
 #  | |__| |  __/ (_| (_) | | | (_| | || (_) | |  \__ \
 #  |_____/ \___|\___\___/|_|  \__,_|\__\___/|_|  |___/
+
 
 def memoize(func):
     '''
@@ -76,6 +85,7 @@ def select(matrix_a, constraints, row) -> list:
 
     return cols
 
+
 def deselect(matrix_a, constraints, row, cols) -> None:
     '''
     Restores a branch with a no solutions back into matrix_a
@@ -99,7 +109,8 @@ def deselect(matrix_a, constraints, row, cols) -> None:
                 # Add value back into matrix_a
                 matrix_a[k].add(j)
 
-def find_solution(matrix_a, constraints, solution) -> list:
+
+def find_solution(matrix_a, constraints, solution):
     '''
     Recursively attempts to find a solution to a given exact cover problem
 
@@ -113,7 +124,7 @@ def find_solution(matrix_a, constraints, solution) -> list:
     '''
     if not matrix_a: yield solution
     else:
-        col = choose_col(matrix_a, constraints)
+        col = choose_col(matrix_a)
         for row in list(matrix_a[col]):
             solution.append(row)
             cols = select(matrix_a, constraints, row)
@@ -127,10 +138,10 @@ def find_solution(matrix_a, constraints, solution) -> list:
             # Remove value from this possible solution
             solution.pop()
 
-def choose_col(matrix_a, constraints):
+
+def choose_col(matrix_a) -> str:
     """
     Returns col with fewest possible values.
-
     @args
         matrix_a: the search space matrix
         constraints: The constraints dict
@@ -139,8 +150,7 @@ def choose_col(matrix_a, constraints):
         col : the column with the fewest possible values
     """
 
-    best_col_val = float("inf")
-    best_col = None
+    best_col_val = 325
 
     for col in matrix_a:
         cur_col_val = len(matrix_a[col])
@@ -157,12 +167,6 @@ def choose_col(matrix_a, constraints):
 
     return best_col
 
-#   __  __       _
-#  |  \/  |     (_)
-#  | \  / | __ _ _ _ __
-#  | |\/| |/ _` | | '_ \
-#  | |  | | (_| | | | | |
-#  |_|  |_|\__,_|_|_| |_|
 
 # Cache the constraints dict; this is not updated and can be re-used.
 @memoize
@@ -192,7 +196,8 @@ def get_constraints() -> dict:
         ]
     return constraints
 
-def sudoku_solver(sudoku) -> ndarray or None:
+
+def solve_alg_x(sudoku) -> ndarray or None:
     '''
     Solves the given sudoku using Donald Knuth's Algorithm X.
 
@@ -222,7 +227,7 @@ def sudoku_solver(sudoku) -> ndarray or None:
                 select(matrix_a, constraints, (row, col, cell))
             except KeyError:
                 # Sudoku is not solvable
-                return full((9, 9), fill_value=-1)
+                return full((9, 9), -1)
 
     # find solution and update initial state with it
     for solution in find_solution(matrix_a, constraints, []):
@@ -231,4 +236,120 @@ def sudoku_solver(sudoku) -> ndarray or None:
             sudoku[row][col] = val
         return sudoku
 
-    return full((9, 9), fill_value=-1)
+    return full((9, 9), -1)
+
+#   ____             _    _                  _
+#  |  _ \           | |  | |                | |
+#  | |_) | __ _  ___| | _| |_ _ __ __ _  ___| | __
+#  |  _ < / _` |/ __| |/ / __| '__/ _` |/ __| |/ /
+#  | |_) | (_| | (__|   <| |_| | | (_| | (__|   <
+#  |____/ \__,_|\___|_|\_\\__|_|  \__,_|\___|_|\_\
+
+def backtrack(sudoku):
+    '''
+    Solves a sudoku using backtracking.
+    If there is no solution, return unsolvable.
+
+    Assumes all initial values are correct;
+    solution must be checked to ensure sudoku is correct.
+
+    @args:
+        sudoku (ndarray) The sudoku to solve
+
+    @returns:
+        solution (ndarray) : The solved sudoku
+
+        solved (bool) : Whether the solver has found a solution.
+    '''
+
+    digits = arange(1, 10)
+    x, y = where(sudoku == 0)
+    if x.size == 0:
+        # Sudoku has been filled
+        return True, sudoku
+
+    vals = ndarray((81))
+
+    best_val = 10
+
+    cur_x, cur_y = x[0], y[0]
+
+    row = sudoku[cur_x, :] # list of values in current row
+    col = sudoku[:, cur_y] # list of values in current col
+    i,j = (cur_x//3)*3, (cur_y//3)*3 # coords of top left of box
+    box = sudoku[i:i+3,j:j+3].reshape(9) # List of values in current box
+
+    # Get all values that cannot be in this cell
+    used_vals = reduce(union1d,(row,col,box))
+    candidates = setdiff1d(digits, used_vals)
+
+    sudoku_copy = npcopy(sudoku)
+
+    # Backtrack for each branch
+    for val in candidates:
+        sudoku_copy[cur_x, cur_y] = val
+        recurse = backtrack(sudoku_copy)
+
+        if recurse[0]:
+            return recurse
+
+    return False, full((9, 9), -1)
+
+
+def check_solved(sudoku) -> ndarray((9,9)):
+    '''
+    Checks if a given sudoku solution is valid.
+
+    @args:
+        sudoku (ndarray) : Sudoku to check
+
+    @returns:
+        The input sudoku if solution is valid, else unsolvable
+    '''
+
+    for i in range(9):
+        x = (i//3)*3
+        y = (i%3)*3
+
+        if (
+            # Check each row has all digits
+            len(set(sudoku[i, :])) !=9 or \
+            # Check each col has all digits
+            len(set(sudoku[:, i])) !=9 or \
+            # Check each box has all digits
+            len(set(sudoku[x:x+3, y:y+3].reshape(9))) !=9
+        ):
+            return full((9, 9), -1)
+    return sudoku
+
+#   __  __       _
+#  |  \/  |     (_)
+#  | \  / | __ _ _ _ __
+#  | |\/| |/ _` | | '_ \
+#  | |  | | (_| | | | | |
+#  |_|  |_|\__,_|_|_| |_|
+
+def sudoku_solver(initial_state) -> ndarray((9,9)):
+    '''
+    Solves a sudoku using either a backtracking algorithm or Algorithm X,
+    depending on which one is faster for the given sudoku.
+
+    @args:
+        initial_state (ndarray) : The unsolved sudoku
+
+    @returns:
+        solution (ndarray) : The solved sudoku
+    '''
+
+    # Decide which algorithm to use
+    if count_nonzero(initial_state) > 39:
+
+        # Optimised for easier sudokus
+        solvable, sol = backtrack(initial_state)
+        if solvable:
+            return check_solved(sol)
+        else:
+            return full((9,9), -1)
+
+    # Optimised for harder sudokus
+    return solve_alg_x(initial_state)

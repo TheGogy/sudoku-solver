@@ -14,7 +14,10 @@
 - [Test package](/test_scripts/README.md/#title)
 
 # <a name="intro"></a>Intro
-This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my i5-11400h processor, can solve a sudoku in an average of 0.75 milliseconds. I have chosen to use Donald Knuth's Algorithm X for this, as the removal of rows and columns from matrix A is an efficient method for constraint propagation.
+This is my solution to the problem proposed by CW1 of the AI module. It is an agent that, on my i5-11400h processor, can solve a sudoku in an average of under half a millisecond for the test data included. I have chosen to use two separate solvers: A simple backtracking algorithm for easy sudokus, and a more complicated algorithm for harder sudokus: Algorithm X.
+
+> **Note**
+> Although my approach uses two separate solvers, my main focus is on Algorithm X, which will be discussed in detail below. A short explanation of my backtracking solver, as well as how I have implemented it, can be found [here](#hybrid_alg/).
 
 # <a name="usage"></a>How to use the solver
 
@@ -297,22 +300,21 @@ We can then proceed onto <u> **Algorithm X** </u>.
 
 
 ```py
-def find_solution(matrix_a, constraints, solution=[]) -> list:
+def find_solution(matrix_a, constraints, solution):
     '''
-    Recursively attempts to find a solution
+    Recursively attempts to find a solution to a given exact cover problem
 
-    @args
+    @args:
         matrix_a: The search space matrix
-        constraints: The constraints dict
+        constraints: the constraints dict
         solution: The state to find (or not find) soltion for
 
-    @returns list: The solution
+    @returns:
+        list: The solution
     '''
-    if not matrix_a:
-        # There are no constraints left to fulfil; sudoku solved.
-        yield list(solution)
+    if not matrix_a: yield solution
     else:
-        col = choose_col(matrix_a, constraints)
+        col = choose_col(matrix_a)
         for row in list(matrix_a[col]):
             solution.append(row)
             cols = select(matrix_a, constraints, row)
@@ -320,8 +322,10 @@ def find_solution(matrix_a, constraints, solution=[]) -> list:
             # Keep trying to find solution recursively
             for i in find_solution(matrix_a, constraints, solution): yield i
 
-            # This row does not have a solution, deselect it
+            # This branch does not have a solution, deselect it
             deselect(matrix_a, constraints, row, cols)
+
+            # Remove value from this possible solution
             solution.pop()
 ```
 This is the recursive backtracking algorithm that attempts to find the solution to the given sudoku.
@@ -505,10 +509,9 @@ This function was inefficient, as even when it had found a column with only one 
 
 My solution was to write my own function, as shown below.
 ```py
-def choose_col(matrix_a, constraints):
+def choose_col(matrix_a) -> str:
     """
     Returns col with fewest possible values.
-
     @args
         matrix_a: the search space matrix
         constraints: The constraints dict
@@ -517,8 +520,7 @@ def choose_col(matrix_a, constraints):
         col : the column with the fewest possible values
     """
 
-    best_col_val = float("inf")
-    best_col = None
+    best_col_val = 325
 
     for col in matrix_a:
         cur_col_val = len(matrix_a[col])
@@ -534,6 +536,7 @@ def choose_col(matrix_a, constraints):
                 return best_col
 
     return best_col
+
 ```
 This reduced the average solve time of any given puzzle from about 2ms to about 1.7ms.
 
@@ -590,6 +593,106 @@ constraints[(row, col, cell)] = [
 ```
 
 This reduced the average solve time from 0.75ms to 0.7ms.
+
+### <a name="hybrid_alg"></a>Using a simple backtracking solver for easier sudokus
+
+Although Algorithm X is very efficient for harder sudokus, the weakest link in my solver was now easy sudokus: the solver was struggling to get any of the `very_easy` sudokus under 1.2ms.
+This is because the easier sudokus have more constraints and so the solver has to eliminate many different rows in matrix A before it can even start algorithm X.
+
+In order to increase the speed of the sudoku in these situations, I wrote a simple backtracking solver that would handle the easier sudokus, and algorithm X would only be used for the harder sudokus with fewer initial values.
+
+I made a greedy version of this algorithm, and found that it was significantly faster for more difficult sudokus, although much slower for easier sudokus. As this algorithm is designed to be optimised for easy sudokus, this algorithm is not greedy.
+
+The backtracking algorithm is shown below:
+```py
+from numpy import copy as npcopy
+...
+def backtrack(sudoku):
+    '''
+    Solves a sudoku using backtracking.
+    If there is no solution, return unsolvable.
+
+    Assumes all initial values are correct;
+    solution must be checked to ensure sudoku is correct.
+
+    @args:
+        sudoku (ndarray) The sudoku to solve
+
+    @returns:
+        solution (ndarray) : The solved sudoku
+
+        solved (bool) : Whether the solver has found a solution.
+    '''
+
+    digits = arange(1, 10)
+    x, y = where(sudoku == 0)
+    if x.size == 0:
+        # Sudoku has been filled
+        return True, sudoku
+
+    vals = ndarray((81))
+
+    best_val = 10
+
+    cur_x, cur_y = x[0], y[0]
+
+    row = sudoku[cur_x, :] # list of values in current row
+    col = sudoku[:, cur_y] # list of values in current col
+    i,j = (cur_x//3)*3, (cur_y//3)*3 # coords of top left of box
+    box = sudoku[i:i+3,j:j+3].reshape(9) # List of values in current box
+
+    # Get all values that cannot be in this cell
+    used_vals = reduce(union1d,(row,col,box))
+    candidates = setdiff1d(digits, used_vals)
+
+    sudoku_copy = npcopy(sudoku)
+
+    # Backtrack for each branch
+    for val in candidates:
+        sudoku_copy[cur_x, cur_y] = val
+        recurse = backtrack(sudoku_copy)
+
+        if recurse[0]:
+            return recurse
+
+    return False, full((9, 9), -1)
+```
+
+For my solver to be as efficient as possible, it would need to know which of the two solvers it can use is the most efficient for any given puzzle.
+The fastest way I found to do this was by counting the number of known elements in the array using `np.count_nonzero` and finding the point at which algorithm X is faster than the simple backtracking algorithm.
+
+In order to find this value, I timed both solvers, one after the other, and found the frequency at which each one won when presented with sudokus with a certain number of constraints. I found that Algorithm X was better suited for sudokus with 39 or fewer constraints. (the minimum number of constraints for a sudoku with exactly one solution is 17.)
+
+The main code that is called when `sudoku_solver` is called is now much cleaner:
+```py
+def sudoku_solver(initial_state) -> ndarray((9,9)):
+    '''
+    Solves a sudoku using either a backtracking algorithm or Algorithm X,
+    depending on which one is faster for the given sudoku.
+
+    @args:
+        initial_state (ndarray) : The unsolved sudoku
+
+    @returns:
+        solution (ndarray) : The solved sudoku
+    '''
+
+    # Decide which algorithm to use
+    if count_nonzero(initial_state) > 39:
+
+        # Optimised for easier sudokus
+        solvable, sol = backtrack(initial_state)
+        if solvable:
+            return check_solved(sol)
+        else:
+            return full((9,9), -1)
+
+    # Optimised for harder sudokus
+    return solve_alg_x(initial_state)
+```
+
+This reduced the average solve time for the sudoku from 0.7ms to 0.4ms.
+
 
 
 <br />

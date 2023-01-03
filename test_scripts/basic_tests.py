@@ -1,5 +1,6 @@
 import numpy as np
 from time import perf_counter
+
 from test_scripts.utils import print_sudoku
 from test_scripts.tests import test_sudoku
 
@@ -59,14 +60,13 @@ def basic_tests(use_process_time: bool) -> None:
             else:
                 print("No, the correct solution is:")
                 print_sudoku(solutions[i])
+                exit(f"Failed {difficulty} sudoku number {i} ")
 
             print("This sudoku took", str(time_taken), "ms to solve.\n")
-            print('- '*30, end='\n')
+            print('- '*30, end='\n\n')
 
 
         print(f"{count}/{len(sudokus)} {difficulty} sudokus correct")
-        if count < len(sudokus):
-            break
 
         difficulty_total_time_tuple = (difficulty, difficulty_total_time)
         difficulty_total_time_list.append(difficulty_total_time_tuple)
