@@ -630,8 +630,6 @@ def backtrack(sudoku):
         # Sudoku has been filled
         return True, sudoku
 
-    vals = ndarray((81))
-
     best_val = 10
 
     cur_x, cur_y = x[0], y[0]
