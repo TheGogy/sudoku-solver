@@ -1,4 +1,3 @@
-from collections.abc import Generator
 from itertools import product
 from sys import intern
 from functools import reduce
