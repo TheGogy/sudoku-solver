@@ -32,7 +32,7 @@ def memoize(func):
         wrapper: The wrapper to cache the output of the function
     '''
     # Cache dictionary
-    class memodict(dict):
+    class cache(dict):
         def __missing__(self, key):
             self[key] = item = func(*key)
             return item
@@ -40,7 +40,7 @@ def memoize(func):
         def __getitem__(self, *key):
             return dict.__getitem__(self, key)
 
-    return memodict().__getitem__
+    return cache().__getitem__
 
 
 #                      _        __   __
