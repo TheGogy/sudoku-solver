@@ -32,16 +32,16 @@ def memoize(func):
         wrapper: The wrapper to cache the output of the function
     '''
     # Cache dictionary
-    cache = {}
+    class memodict(dict):
+        def __missing__(self, key):
+            self[key] = item = func(*key)
+            return item
 
-    def wrapper(*args):
-        # If values are not cached, add to cache
-        if args not in cache:
-            cache[args] = func(*args)
+        def __getitem__(self, *key):
+            return dict.__getitem__(self, key)
 
-        # Return cached values
-        return cache[args]
-    return wrapper
+    return memodict().__getitem__
+
 
 #                      _        __   __
 #                /\   | |       \ \ / /
@@ -267,14 +267,12 @@ def backtrack(sudoku):
         # Sudoku has been filled
         return True, sudoku
 
-    best_val = 10
-
     cur_x, cur_y = x[0], y[0]
 
     row = sudoku[cur_x, :] # list of values in current row
     col = sudoku[:, cur_y] # list of values in current col
     i,j = (cur_x//3)*3, (cur_y//3)*3 # coords of top left of box
-    box = sudoku[i:i+3,j:j+3].reshape(9) # List of values in current box
+    box = sudoku[i:i+3,j:j+3].ravel() # List of values in current box
 
     # Get all values that cannot be in this cell
     used_vals = reduce(union1d,(row,col,box))
@@ -293,7 +291,7 @@ def backtrack(sudoku):
     return False, full((9, 9), -1)
 
 
-def check_solved(sudoku) -> ndarray((9,9)):
+def check_solved(sudoku) -> ndarray((9, 9)):
     '''
     Checks if a given sudoku solution is valid.
 
@@ -314,7 +312,7 @@ def check_solved(sudoku) -> ndarray((9,9)):
             # Check each col has all digits
             len(set(sudoku[:, i])) !=9 or \
             # Check each box has all digits
-            len(set(sudoku[x:x+3, y:y+3].reshape(9))) !=9
+            len(set(sudoku[x:x+3, y:y+3].ravel())) !=9
         ):
             return full((9, 9), -1)
     return sudoku
@@ -326,7 +324,7 @@ def check_solved(sudoku) -> ndarray((9,9)):
 #  | |  | | (_| | | | | |
 #  |_|  |_|\__,_|_|_| |_|
 
-def sudoku_solver(initial_state) -> ndarray((9,9)):
+def sudoku_solver(initial_state) -> ndarray((9, 9)):
     '''
     Solves a sudoku using either a backtracking algorithm or Algorithm X,
     depending on which one is faster for the given sudoku.
