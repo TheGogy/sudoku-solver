@@ -558,16 +558,15 @@ def memoize(func):
         wrapper: The wrapper to cache the output of the function
     '''
     # Cache dictionary
-    cache = {}
+    class cache(dict):
+        def __missing__(self, key):
+            self[key] = item = func(*key)
+            return item
 
-    def wrapper(*args):
-        # If values are not cached, add to cache
-        if args not in cache:
-            cache[args] = func(*args)
+        def __getitem__(self, *key):
+            return dict.__getitem__(self, key)
 
-        # Return cached values
-        return cache[args]
-    return wrapper
+    return cache().__getitem__
 ```
 This reduced the solve time for an average sudoku from 1.7ms to 0.75ms.
 
@@ -637,7 +636,7 @@ def backtrack(sudoku):
     row = sudoku[cur_x, :] # list of values in current row
     col = sudoku[:, cur_y] # list of values in current col
     i,j = (cur_x//3)*3, (cur_y//3)*3 # coords of top left of box
-    box = sudoku[i:i+3,j:j+3].reshape(9) # List of values in current box
+    box = sudoku[i:i+3,j:j+3].ravel() # List of values in current box
 
     # Get all values that cannot be in this cell
     used_vals = reduce(union1d,(row,col,box))
@@ -663,7 +662,7 @@ In order to find this value, I timed both solvers, one after the other, and foun
 
 The main code that is called when `sudoku_solver` is called is now much cleaner:
 ```py
-def sudoku_solver(initial_state) -> ndarray((9,9)):
+def sudoku_solver(initial_state) -> ndarray((9, 9)):
     '''
     Solves a sudoku using either a backtracking algorithm or Algorithm X,
     depending on which one is faster for the given sudoku.
