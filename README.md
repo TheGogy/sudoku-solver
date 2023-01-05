@@ -629,17 +629,15 @@ def backtrack(sudoku):
         # Sudoku has been filled
         return True, sudoku
 
-    best_val = 10
-
     cur_x, cur_y = x[0], y[0]
 
-    row = sudoku[cur_x, :] # list of values in current row
-    col = sudoku[:, cur_y] # list of values in current col
-    i,j = (cur_x//3)*3, (cur_y//3)*3 # coords of top left of box
-    box = sudoku[i:i+3,j:j+3].ravel() # List of values in current box
+    row = sudoku[cur_x, :]  # list of values in current row
+    col = sudoku[:, cur_y]  # list of values in current col
+    i, j = (cur_x//3)*3, (cur_y//3)*3  # coords of top left of box
+    box = sudoku[i:i+3, j:j+3].ravel()  # List of values in current box
 
     # Get all values that cannot be in this cell
-    used_vals = reduce(union1d,(row,col,box))
+    used_vals = reduce(union1d, (row, col, box))
     candidates = setdiff1d(digits, used_vals)
 
     sudoku_copy = npcopy(sudoku)

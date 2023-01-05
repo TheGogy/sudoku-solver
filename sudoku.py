@@ -269,13 +269,13 @@ def backtrack(sudoku):
 
     cur_x, cur_y = x[0], y[0]
 
-    row = sudoku[cur_x, :] # list of values in current row
-    col = sudoku[:, cur_y] # list of values in current col
-    i,j = (cur_x//3)*3, (cur_y//3)*3 # coords of top left of box
-    box = sudoku[i:i+3,j:j+3].ravel() # List of values in current box
+    row = sudoku[cur_x, :]  # list of values in current row
+    col = sudoku[:, cur_y]  # list of values in current col
+    i, j = (cur_x//3)*3, (cur_y//3)*3  # coords of top left of box
+    box = sudoku[i:i+3, j:j+3].ravel()  # List of values in current box
 
     # Get all values that cannot be in this cell
-    used_vals = reduce(union1d,(row,col,box))
+    used_vals = reduce(union1d, (row, col, box))
     candidates = setdiff1d(digits, used_vals)
 
     sudoku_copy = npcopy(sudoku)
@@ -324,7 +324,8 @@ def check_solved(sudoku) -> ndarray((9, 9)):
 #  | |  | | (_| | | | | |
 #  |_|  |_|\__,_|_|_| |_|
 
-def sudoku_solver(initial_state) -> ndarray((9, 9)):
+
+def sudoku_solver(initial_state):
     '''
     Solves a sudoku using either a backtracking algorithm or Algorithm X,
     depending on which one is faster for the given sudoku.
@@ -344,8 +345,7 @@ def sudoku_solver(initial_state) -> ndarray((9, 9)):
         solvable, sol = backtrack(initial_state)
         if solvable:
             return check_solved(sol)
-        else:
-            return full((9, 9), -1)
+        return full((9, 9), -1)
 
     # Optimised for harder sudokus
     return solve_alg_x(initial_state)
