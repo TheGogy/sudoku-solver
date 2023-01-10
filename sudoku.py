@@ -32,16 +32,16 @@ def memoize(func):
         wrapper: The wrapper to cache the output of the function
     '''
     # Cache dictionary
-    class cache(dict):
-        def __missing__(self, key):
-            self[key] = item = func(*key)
-            return item
+    cache = {}
 
-        def __getitem__(self, *key):
-            return dict.__getitem__(self, key)
+    def wrapper(*args):
+        # If values are not cached, add to cache
+        if args not in cache:
+            cache[args] = func(*args)
 
-    return cache().__getitem__
-
+        # Return cached values
+        return cache[args]
+    return wrapper
 
 #                      _        __   __
 #                /\   | |       \ \ / /
@@ -168,6 +168,7 @@ def choose_col(matrix_a) -> str:
 
 
 # Cache the constraints dict; this is not updated and can be re-used.
+
 @memoize
 def get_constraints() -> dict:
     '''
@@ -196,6 +197,16 @@ def get_constraints() -> dict:
     return constraints
 
 
+@memoize
+def get_mat_a():
+    return {j: set() for j in(
+        [intern((f"cell {i}")) for i in product (range(9), range(9)    )] +
+        [intern((f"row {i}" )) for i in product (range(9), range(1, 10))] +
+        [intern((f"col {i}" )) for i in product (range(9), range(1, 10))] +
+        [intern((f"box {i}" )) for i in product (range(9), range(1, 10))]
+    )}
+
+
 def solve_alg_x(sudoku) -> ndarray or None:
     '''
     Solves the given sudoku using Donald Knuth's Algorithm X.
@@ -205,12 +216,7 @@ def solve_alg_x(sudoku) -> ndarray or None:
                                else (9,9) numpy array with values -1
     '''
 
-    matrix_a = {j: set() for j in(
-        [intern((f"cell {i}")) for i in product (range(9), range(9)    )] +
-        [intern((f"row {i}" )) for i in product (range(9), range(1, 10))] +
-        [intern((f"col {i}" )) for i in product (range(9), range(1, 10))] +
-        [intern((f"box {i}" )) for i in product (range(9), range(1, 10))]
-    )}
+    matrix_a = get_mat_a().copy()
 
     constraints = get_constraints()
 
@@ -288,10 +294,10 @@ def backtrack(sudoku):
         if recurse[0]:
             return recurse
 
-    return False, full((9, 9), -1)
+    return False, None
 
 
-def check_solved(sudoku) -> ndarray((9, 9)):
+def check_solved(sudoku) -> ndarray((9,9)):
     '''
     Checks if a given sudoku solution is valid.
 
@@ -325,7 +331,7 @@ def check_solved(sudoku) -> ndarray((9, 9)):
 #  |_|  |_|\__,_|_|_| |_|
 
 
-def sudoku_solver(initial_state):
+def sudoku_solver(initial_state) -> ndarray((9,9)):
     '''
     Solves a sudoku using either a backtracking algorithm or Algorithm X,
     depending on which one is faster for the given sudoku.
@@ -338,14 +344,14 @@ def sudoku_solver(initial_state):
     '''
 
     # Decide which algorithm to use
-    # 39 is the optimal point between the solvers
     if count_nonzero(initial_state) > 39:
 
         # Optimised for easier sudokus
         solvable, sol = backtrack(initial_state)
         if solvable:
             return check_solved(sol)
-        return full((9, 9), -1)
+        else:
+            return full((9,9), -1)
 
     # Optimised for harder sudokus
     return solve_alg_x(initial_state)
