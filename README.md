@@ -1,4 +1,4 @@
-# <a name="intro"></a>**Sudoku Solver using Exact Cover and Algorithm X**
+# <a name="intro"></a>**Sudoku Solver using Exact Satisfactability and Algorithm X**
 
 ## <a name="links"></a>Links
 - [Intro](#intro)

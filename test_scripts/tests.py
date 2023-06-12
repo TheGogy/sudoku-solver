@@ -20,20 +20,16 @@ def test_sudoku(sudoku: ndarray, use_process_time: bool):
 
     signal(SIGALRM, timeout_handler)
     alarm(TIMEOUT_THRESHOLD)
+    if use_process_time:
+        timer = process_time
+    else:
+        timer = perf_counter
 
-    # - - - - - - - - - - - - - - - - - - - #
-    # This code is written like this because if it was cleaner it
-    # has an impact on performance
     try:
+        start_time = timer()
+        your_solution = sudoku_solver(sudoku)
+        end_time = timer()
 
-        if use_process_time:
-            start_time = process_time()
-            your_solution = sudoku_solver(sudoku)
-            end_time = process_time()
-        else:
-            start_time = perf_counter()
-            your_solution = sudoku_solver(sudoku)
-            end_time = perf_counter()
 
     except TimeoutException:
         return full((9,9), fill_value=0), TIMEOUT_THRESHOLD * 1000
